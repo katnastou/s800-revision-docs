@@ -1,6 +1,6 @@
 ---
 layout: entry
-title: "Gene/Gene Product"
+title: "GGP"
 shortdef: "gene/protein mentions"
 ---
 

@@ -1,3 +1,3 @@
-# S800 corpus revision documentation
+# Typed relation annotation documentation
 
-https://spyysalo.github.io/s800-revision-docs/
+https://katnastou.github.io/typed-relation-annotation-docs/

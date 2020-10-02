@@ -29,12 +29,11 @@ T2	GGP 28 31	AP-1
 R10	Complex_formation Arg1:T1 Arg2:T2	 
 ~~~
 5. __Fusion proteins__ should be treated as one entity for the purposes of annotation and during the creation of the training dataset. These should get an annotator’s note: __Fusion__
-  * Note: Due to the inability of marking discontinuous entities, some Fusion proteins have received the Note: __Fusion, discontinuous__ in sentences, example from [11713274](https://pubmed.ncbi.nlm.nih.gov/11713274/)
+  * Note: Due to the inability of marking discontinuous entities, some Fusion proteins have received the Note: __Fusion, discontinuous__ in sentences, example from [11713274](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-01/11713274?focus=sent~10)
   ~~~ ann
   full-length NRIF3 fused to the DNA-binding domain of Gal4
   T1	GGP 12 17	NRIF3
   T2	GGP 53 57	Gal4
-  #1	AnnotatorNotes T1	Fusion, discontinuous
   ~~~
 6. Relations __should not be interpreted as combinations__, on the contrary each annotated relation should be __valid on each own__ (e.g. _“A positively regulates the proteolytic degradation of B and that leads to the rapid depletion of B”_, should be annotated as _“A regulation_of_proteolysis B”_ and _“A negative_regulation B”_ and not the combination of relations _“A positive_regulation B”_ and _“A regulation_of_proteolysis B”_)
 7. __Co-immunoprecipitation__ can be used as an indicator of complex formation between two protein mentions

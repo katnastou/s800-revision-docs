@@ -33,7 +33,7 @@ R10	Complex_formation Arg1:T1 Arg2:T2
 ~~~ ann
 full-length NRIF3 fused to the DNA-binding domain of Gal4
 T1	GGP 12 17	NRIF3
-T2	GGP 53 56	Gal4
+T2	GGP 53 57	Gal4
 ~~~
 6. Relations __should not be interpreted as combinations__, on the contrary each annotated relation should be __valid on each own__ (e.g. _“A positively regulates the proteolytic degradation of B and that leads to the rapid depletion of B”_, should be annotated as _“A regulation_of_proteolysis B”_ and _“A negative_regulation B”_ and not the combination of relations _“A positive_regulation B”_ and _“A regulation_of_proteolysis B”_)
 7. __Co-immunoprecipitation__ can be used as an indicator of complex formation between two protein mentions
@@ -118,9 +118,10 @@ CDK1 Catalysis_of_phosphorylation PPP1R12A
 PLK1 Catalysis_of_phosphorylation PPP1R12A
 </code></pre>
 2. When _Regulation of Transcription_ is implied, it should be preffered over the parent term _Regulation of Gene Expression_, thus annotating the __authors intended meaning in context__ instead of the most accurate term in the relation hierarchy.
-<pre><code>
+~~~ ann
 HSF1 can function as both an activator of heat shock genes and a repressor of non-heat shock genes such as IL1B and c-fos.
-
+~~~
+<pre><code>
 HSF1 Positive Regulation heat shock genes
 HSF1 Negative Regulation non-heat shock genes
 HSF1 Negative Regulation IL1B
@@ -129,18 +130,20 @@ HSF1 Regulation of Transcription IL1B
 HSF1 Regulation of Transcription c-fos
 </code></pre>
 3.	When the level at which the protein product is regulated at is not clear, then the general term _Regulation of Gene Expression_ should be used.
-<pre><code>
+~~~ ann
 We demonstrated that IL-12 directly up-regulates IRF-1 to the same extent as IFN-alpha in normal human T cells and in NK cells.
-
+~~~
+<pre><code>
 IL-12      Regulation of Gene Expression    IRF-1
 IFN-alpha             Regulation of Gene Expression    IRF-1
 IL-12      Positive Regulation               IRF-1
 IFN-alpha             Positive Regulation             IRF-1
 </code></pre>
 4. When positive/negative regulation of the catalysis of a post-translational modification is mentioned then the generic type _"A Regulation B"_ should be used, and no reference to "positive/negative" should be made, if the effect to protein levels is unclear.
-<pre><code>
+~~~ ann
 A negatively regulates the phosphorylation of B
-
+~~~
+<pre><code>
 A Regulation B
 </code></pre>
 Note: The idea behind using the general term _Regulation_ is that we want to get in there as much as possible in terms of directionality for the edges. So, in order to do that, we will have to be a little bit more flexible with the hierarchy to include something very general that would allow us to have directionality, even in cases where we don’t know the type of effect A has on B, but we know it is upstream. Also, we would have to be a bit more flexible with what we annotate in general and even in cases where we are not 100% sure, to add an annotation (as long as we are pretty certain it is what the authors mean). The relevant GO term is [Regulation of biological process](http://amigo.geneontology.org/amigo/term/GO:0050789)

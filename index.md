@@ -3,11 +3,11 @@ layout: entry
 title: Documentation for Typed Relation Annotation
 ---
 
-# General guidelines
+## General guidelines
 
 Annotations should be made according to the annotator’s best understanding of the __author’s intended meaning in context__. For example, relations expressed using ambiguous verbs such as __"associate"__ that express complex formation in some contexts but not others should be annotated if and only if the annotator interprets the authors as intending to describe complex formation. Annotators __should apply__ their general __background knowledge__ as well as their __domain expertise__ when interpreting author statements.
 
-# Complex formation
+## Complex formation
 
 Undirected binary relation associating two proteins that form a complex. Annotated for any statement implying the existence of a complex, including statements explicitly discussing the dissociation of a complex.
 Relevant ontology terms:
@@ -17,7 +17,7 @@ Relevant ontology terms:
 
 Note that by contrast to the scope of [GO:0032991](http://amigo.geneontology.org/amigo/term/GO:0032991) (protein-containing complex) and related terms, the annotated complex formation relation is restricted to cases where both of the associated constituents are _proteins_, _protein complexes_, _protein families_, _protein groups_ or _chemicals_.
 
-## Detailed guidelines
+### Detailed guidelines
 
 1. Complex formation relations are only annotated between two different protein mentions. In particular, statements such as “homodimerization of A” __are not annotated__
 2. Complexes of more than two proteins are annotated by creating __all binary relations__ between the components
@@ -41,12 +41,12 @@ T2	GGP 53 57	Gal4
 9. Post-translational modifications should __not__ receive a binding annotation unless binding is clearly mentioned in context. PTMs imply transient interactions which will not be present in physical interaction databases, so they shouldn't be annotated as such. For an example of a corner case see [General examples](#general-examples-not-from-the-corpus)
 
 
-## Negation and speculation
+### Negation and speculation
 
 1. Statements explicitly __denying__ the formation of a complex (e.g. “A does not bind B”) are __not annotated__ in any way. However, if the negated statement is qualified with conditions in a way that implies that the proteins would normally form a complex, the statement is annotated as if the negation were absent (e.g. _“When A is phosphorylated, it fails to form a complex with B”_).
 2. Statements expressed __speculatively__ or with __hedging__ expressions (e.g. _“may form a complex”_) are __annotated__ identically to affirmative statements (in effect, __speculation and hedging are ignored__).
 
-## Specific rules for complexes/families and plural form annotations
+### Specific rules for complexes/families and plural form annotations
 
 1. __Complexes__, __Families__ and __Groups__ of proteins receive a __GGP__ annotation and an Annotator's __Note__ (_“Complex”_, _“Family”_, _"Group"_) stating their type.
 2. The words _“complex”_, _“family”_ and _"group"_ should __not__ be part of the entity annotations.
@@ -107,7 +107,7 @@ T2	GGP 53 57	Gal4
   * Dopamine receptors: __Class__
 5. Annotations should be applied to all variants: e.g. __NF kappaB__, __NF-kappaB__, __NFkappaB__ should all be marked as __Complex__
 
-## Specific Examples discussed
+### Specific Examples discussed
 
 * Instances of binding and phosphorylation should be seperately annotated as two events when binding is clearly mentioned in text.
 ~~~ ann
@@ -150,7 +150,7 @@ Note: The idea behind using the general term _Regulation_ is that we want to get
 5. When _Complex formation_ is not clear, _Regulation_ should be used for annotating a relationship instead e.g. relationship between TNFR1 and TRAF2 in this sentence [9353251](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/complex-formation-batch-02/9353251?focus=sent~6)
 6.  In the current scheme we can annotate the semantics of e.g. "A negatively regulates the expression of B" by assigning _two relations_: _A  negatively regulates B_ AND _A Regulation of Gene Expression B_ 
 
-## Removed abstracts
+### Removed abstracts
 
 In this section I will try to explain the reasoning behind marking some abstracts for removal:
 * The reasoning behind removal and not leaving abstracts simply unannonated is to make sure that abstracts that couldn't be annotated not only are not present on our positive, but also not on our negative examples.
@@ -170,7 +170,7 @@ In this section I will try to explain the reasoning behind marking some abstract
 * when will we tag “regulation of proteolysis” and when “catalysis of ubiquitination” if the ubiquitin system is involved?
 * Should we rethink homodimers? I have only annotated very few cases with an annotators note.
 
-# Relation type hierarchy (as of 27/02/2020)
+## Relation type hierarchy (as of 27/02/2020)
 
 * Regulation
   * Positive_regulation  
@@ -193,9 +193,9 @@ In this section I will try to explain the reasoning behind marking some abstract
   * Catalysis_of_deubiquitination
 * Other  
 
-# Annotation Dataset Generation
+## Annotation Dataset Generation
 
-## Complex formation 01
+### Complex formation 01
 
 The script converting the __BioNLP Shared Task-style event annotation__ into binary relations is found [here](https://github.com/spyysalo/binarize-events/commit/b289b1506ede543aad5f19770f3b687a3ff63976). The initial converted data was the [training set of the BioNLP ST 2009] (http://www.nactem.ac.uk/GENIA/current/Shared-tasks/BioNLP-ST-2009/bionlp09_shared_task_training_data_rev2.tar.gz). The conversion process was as follows:
 <pre><code>
@@ -213,15 +213,15 @@ ls binarized/*.ann | wc -l
 </code></pre>
 That's 97/800 documents in the original data. While the other 703 could at a minimum serve a useful role in providing negative examples for complex formation, I think it's probably good to at least initially focus on documents likely to provide positive examples.
 
-## Complex formation 02
+### Complex formation 02
 
 The process is similar to the generation of Complex formation 01 dataset. The initial converted dataset was the [development set of the BioNLP ST 2009] (http://www.nactem.ac.uk/GENIA/current/Shared-tasks/BioNLP-ST-2009/bionlp09_shared_task_development_data_rev1.tar.gz)
 
-## Physical Interaction Databases Abstracts 01
+### Physical Interaction Databases Abstracts 01
 
 <TODO>
 
-## Physical Interaction Databases Full-text Paragraphs 01
+### Physical Interaction Databases Full-text Paragraphs 01
 
 <TODO>
 

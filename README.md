@@ -1,3 +1,3 @@
 # Typed relation annotation documentation
 
-https://katnastou.github.io/typed-relation-annotation-docs/
+https://katnastou.github.io/stringdb-typed-relation-annotation-docs/

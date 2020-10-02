@@ -25,16 +25,16 @@ Note that by contrast to the scope of [GO:0032991](http://amigo.geneontology.org
 ~~~ ann
 direct inhibition of NFATp/AP-1 complex formation by a nuclear hormone receptor
 T1	GGP 21 26	NFATp
-T2	GGP 28 31	AP-1
+T2	GGP 27 31	AP-1
 R10	Complex_formation Arg1:T1 Arg2:T2	 
 ~~~
 5. __Fusion proteins__ should be treated as one entity for the purposes of annotation and during the creation of the training dataset. These should get an annotator’s note: __Fusion__
   * Note: Due to the inability of marking discontinuous entities, some Fusion proteins have received the Note: __Fusion, discontinuous__ in sentences, example from [11713274](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-01/11713274?focus=sent~10)
-  ~~~ ann
-  full-length NRIF3 fused to the DNA-binding domain of Gal4
-  T1	GGP 12 17	NRIF3
-  T2	GGP 53 57	Gal4
-  ~~~
+~~~ ann
+full-length NRIF3 fused to the DNA-binding domain of Gal4
+T1	GGP 12 17	NRIF3
+T2	GGP 53 56	Gal4
+~~~
 6. Relations __should not be interpreted as combinations__, on the contrary each annotated relation should be __valid on each own__ (e.g. _“A positively regulates the proteolytic degradation of B and that leads to the rapid depletion of B”_, should be annotated as _“A regulation_of_proteolysis B”_ and _“A negative_regulation B”_ and not the combination of relations _“A positive_regulation B”_ and _“A regulation_of_proteolysis B”_)
 7. __Co-immunoprecipitation__ can be used as an indicator of complex formation between two protein mentions
 8. _“A regulation_of_proteolysis B”_ does not necessarily imply _"A negative regulation of B"_, so this should be annotated with care
@@ -109,6 +109,7 @@ R10	Complex_formation Arg1:T1 Arg2:T2
 
 ## Specific Examples discussed
 
+<div class="tip" markdown="1">
 * Instances of binding and phosphorylation should be seperately annotated as two events when binding is clearly mentioned in text.
 <pre><code>
 PPP1R12A is phosphorylated at Ser-473 by CDK1 during mitosis, creating docking sites for the POLO box domains of PLK1. Subsequently, PLK1 binds and phosphorylates PPP1R12A.
@@ -145,6 +146,7 @@ A Regulation B
 Note: The idea behind using the general term _Regulation_ is that we want to get in there as much as possible in terms of directionality for the edges. So, in order to do that, we will have to be a little bit more flexible with the hierarchy to include something very general that would allow us to have directionality, even in cases where we don’t know the type of effect A has on B, but we know it is upstream. Also, we would have to be a bit more flexible with what we annotate in general and even in cases where we are not 100% sure, to add an annotation (as long as we are pretty certain it is what the authors mean). The relevant GO term is [Regulation of biological process](http://amigo.geneontology.org/amigo/term/GO:0050789)
 5. When _Complex formation_ is not clear, _Regulation_ should be used for annotating a relationship instead e.g. relationship between TNFR1 and TRAF2 in this sentence [9353251](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/complex-formation-batch-02/9353251?focus=sent~6)
 6.  In the current scheme we can annotate the semantics of e.g. "A negatively regulates the expression of B" by assigning _two relations_: _A  negatively regulates B_ AND _A Regulation of Gene Expression B_ 
+</div>
 
 ## Removed abstracts
 

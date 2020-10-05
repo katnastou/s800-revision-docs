@@ -16,9 +16,9 @@ markdown_ext: md
 # Site settings
 
 name: Typed Relation Annotation Docs
-homeurl: "https://katnastou.github.io/typed-relation-annotation-docs/"
-editurl: "https://github.com/katnastou/typed-relation-annotation-docs/edit/master"
-issueurl: "https://github.com/katnastou/typed-relation-annotation-docs/issues"
+homeurl: "https://katnastou.github.io/stringdb-typed-relation-annotation-docs/"
+editurl: "https://github.com/katnastou/stringdb-typed-relation-annotation-docs/edit/master"
+issueurl: "https://github.com/katnastou/stringdb-typed-relation-annotation-docs/issues"
 
 ##############################################################################
 

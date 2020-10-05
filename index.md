@@ -121,7 +121,7 @@ R1	Catalysis_of_phosphorylation Arg1:T2 Arg2:T1
 R2	Catalysis_of_phosphorylation Arg1:T4 Arg2:T5
 R3	Complex_formation Arg1:T4 Arg2:T5
 ~~~
-2. When _Regulation of Transcription_ is implied, it should be preffered over the parent term _Regulation of Gene Expression_, thus annotating the __authors intended meaning in context__ instead of the most accurate term in the relation hierarchy.
+2. When _"regulation of expression"_ is mentioned in text, if the annotator suspects that the intended meaning of the authors is __Regulation of Transcription__ based on the context of the document they have available, then the annotator should annotate __Regulation of Gene Expression__, with a __Note: "Potentially Regulation of Transcription"__.
 ~~~ ann
 HSF1 can function as both an activator of heat shock genes and a repressor of non-heat shock genes such as IL1B and c-fos.
 T1	GGP 0 4	HSF1
@@ -129,8 +129,8 @@ T2	GGP 107 111	IL1B
 T3	GGP 116 121	c-fos
 R1 Negative_Regulation Arg1:T1 Arg2:T2
 R2 Negative_Regulation Arg1:T1 Arg2:T3
-R3 Regulation_of_Transcription Arg1:T1 Arg2:T2
-R4 Regulation_of_Transcription Arg1:T1 Arg2:T3
+R3 Regulation_of_Gene_Expression Arg1:T1 Arg2:T2
+R4 Regulation_of_Gene_Expression Arg1:T1 Arg2:T3
 ~~~
 3.	When the level at which the protein product is regulated at is not clear, then the general term _Regulation of Gene Expression_ should be used.
 ~~~ ann

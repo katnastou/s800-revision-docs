@@ -222,7 +222,7 @@ That's 97/800 documents in the original data. While the other 703 could at a min
 
 ### Complex formation 02
 
-The process is similar to the generation of Complex formation 01 dataset. The initial converted dataset was the [development set of the BioNLP ST 2009] (http://www.nactem.ac.uk/GENIA/current/Shared-tasks/BioNLP-ST-2009/bionlp09_shared_task_development_data_rev1.tar.gz)
+The process is similar to the generation of Complex formation 01 dataset. The initial converted dataset was the [development set of the BioNLP ST 2009](http://www.nactem.ac.uk/GENIA/current/Shared-tasks/BioNLP-ST-2009/bionlp09_shared_task_development_data_rev1.tar.gz)
 
 ### Physical Interaction Databases Abstracts 01
 

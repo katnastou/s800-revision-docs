@@ -227,10 +227,29 @@ The process is similar to the generation of Complex formation 01 dataset. The in
 
 ### Physical Interaction Databases Abstracts 01
 
-TODO
+* __66,757 papers__ (12,575 in PMC OA) extracted from [BioGRID](https://thebiogrid.org/), [IntAct](https://www.ebi.ac.uk/intact/) and [MINT](https://mint.bio.uniroma2.it/) describing 1 to 298534 physical or genetic interactions each
+* Remove papers with __>20 interactions__ in the databases. These papers probably do not discuss interactions in the abstract as they will correspond to more high-throughput experiments
+* Keep abstracts where __2-40 entities__ have been tagged
+* Split data in abstracts containing entities mentioned __more than 1000 times__ in total (32 unique entities) and abstracts containing entities mentioned __less than 1000 times__ in total (77638 unique entities)
+* Normalize, shuffle and randomly select __313 abstracts__ to annotate (the selection process has changed 3 times, so we started with 200 abstracts but ended up with 313 to keep the balance)
 
 ### Physical Interaction Databases Full-text Paragraphs 01
 
-TODO
+* __12,577 PMC OA__ extracted from [BioGRID](https://thebiogrid.org/), [IntAct](https://www.ebi.ac.uk/intact/) and [MINT](https://mint.bio.uniroma2.it/) describing 1 to 298534 physical or genetic interactions each
+* Remove papers with __>20 interactions__ in the databases. These papers probably do not discuss interactions in the abstract as they will correspond to more high-throughput experiments
+* Keep paragraphs containing 50-500 words
+* Keep paragraphs where 2-40 entities have been tagged
+* Split data in paragraphs containing entities mentioned __more than 1000 times__ in total (532 unique entities) and paragraphs containing entities mentioned __less than 1000 times__ in total (45037 unique entities)
+* Normalize, shuffle and randomly select __100 paragraphs__ to annotate
+
+### Datasets used to train the models
+
+* __80-20_pos-neg-only-shuffled__: which contains examples from positive (complex formation) and negative (no relationship) examples that have been manually annotated
+* __80-20_pos-other-rel-neg-neg-shuffled__: which contains examples from positive (complex formation) and negative examples that consist of both other relationships (other than complex formation) and no relationships between the entities that have been manually annotated
+* __Positive set__: All complex formation relationships. Because I saw that some entities might be part of multiple relationships (and I thought that this might introduce some bias in our dataset if we kept the context of those entities multiple times) I tried to reduce that by keeping __only one complex formation relationship for each entity that shows up first in the relationship__ (that roughly means that if the relationship is: A interacts with B and C, and B interacts with C and D, and C interacts with D, I would keep A-B, B-C, C-D and the context around them). I shuffle first, so that not only the first entity in a complex is selected each time.
+* __Other relationship set (negative)__: I made this dataset to go into the negative set later. This comprises all other relationship types (other than complex formation) in the data. I masked entities the same way I did for the positive set and used the same bias reduction strategy.
+* __No relationship set (negative)__: For this dataset I found all entities that were not in relationship with each other, that were in the same sentence with a distance less that 18 words and which were not equivalent (since, I usually didn’t mark entities more than 5 words away as equivalent if they were not in a relationship, in this case I also checked that the two entities are not the same based on text – of course we will miss some cases this way, but probably not a lot). Afterwards I applied the same technique as above to reduce multiple instances of similar context.
+* __Masking__: Entity 1 has been replaced with the [unused1] token, entity 2 with [unused2] all other entities in context with [unused3], thus ignoring equiv entities completely. This should be fixed to mark relationships for all entities and equiv entities. 
+* For the creation of all datasets I only kept relationships where the entities have __less than 20 words distance__ and then I kept 100 words to the left and 100 to the right. For the positive and other relationship dataset (see below) I kept relationships even if they spanned more than one sentence, while for the negative I only kept relationships that were on the same sentence. Due to the 18 words restriction in both datasets these cases are fairly limited and no bias is introduced.
 
 For information on Annodoc, see <http://spyysalo.github.io/annodoc/>.

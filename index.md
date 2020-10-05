@@ -124,12 +124,12 @@ T4 Complex_formation T5
 2. When _Regulation of Transcription_ is implied, it should be preffered over the parent term _Regulation of Gene Expression_, thus annotating the __authors intended meaning in context__ instead of the most accurate term in the relation hierarchy.
 ~~~ ann
 HSF1 can function as both an activator of heat shock genes and a repressor of non-heat shock genes such as IL1B and c-fos.
-T1	Positive Regulation	T2
-T1	Negative Regulation	T3
-T1	Negative Regulation	T4
-T1	Negative Regulation	T4
-T1	Regulation of Transcription	T5
-T1	Regulation of Transcription	T5
+T1	Positive_Regulation	T2
+T1	Negative_Regulation	T3
+T1	Negative_Regulation	T4
+T1	Negative_Regulation	T4
+T1	Regulation_of_Transcription	T5
+T1	Regulation_of_Transcription	T5
 ~~~
 3.	When the level at which the protein product is regulated at is not clear, then the general term _Regulation of Gene Expression_ should be used.
 ~~~ ann
@@ -137,10 +137,10 @@ We demonstrated that IL-12 directly up-regulates IRF-1 to the same extent as IFN
 T1	GGP 21 26	IL-12
 T2	GGP 49 54	IRF-1
 T3	GGP 77 86	IFN-alpha
-T1	Regulation of Gene Expression	T2
-T3	Regulation of Gene Expression	T2
-T1	Positive Regulation	T2
-T1	Positive Regulation	T2
+T1	Regulation_of_Gene_Expression	T2
+T3	Regulation_of_Gene_Expression	T2
+T1	Positive_Regulation	T2
+T1	Positive_Regulation	T2
 ~~~
 4. When positive/negative regulation of the catalysis of a post-translational modification is mentioned then the generic type _"A Regulation B"_ should be used, and no reference to "positive/negative" should be made, if the effect to protein levels is unclear.
 ~~~ ann

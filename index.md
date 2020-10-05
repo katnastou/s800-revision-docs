@@ -120,7 +120,6 @@ T5	GGP 163 171	PPP1R12A
 R1	Catalysis_of_phosphorylation Arg1:T2 Arg2:T1
 R2	Catalysis_of_phosphorylation Arg1:T4 Arg2:T5
 R3	Complex_formation Arg1:T4 Arg2:T5
-
 ~~~
 2. When _Regulation of Transcription_ is implied, it should be preffered over the parent term _Regulation of Gene Expression_, thus annotating the __authors intended meaning in context__ instead of the most accurate term in the relation hierarchy.
 ~~~ ann

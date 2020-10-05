@@ -117,19 +117,21 @@ T2	GGP 41 45	CDK1
 T3	GGP 113 117	PLK1
 T4	GGP 133 137	PLK1
 T5	GGP 163 171	PPP1R12A
-T2 Catalysis_of_phosphorylation T1
-T4 Catalysis_of_phosphorylation T5
-T4 Complex_formation T5
+R1	Catalysis_of_phosphorylation Arg1:T2 Arg2:T1
+R2	Catalysis_of_phosphorylation Arg1:T4 Arg2:T5
+R3	Complex_formation Arg1:T4 Arg2:T5
+
 ~~~
 2. When _Regulation of Transcription_ is implied, it should be preffered over the parent term _Regulation of Gene Expression_, thus annotating the __authors intended meaning in context__ instead of the most accurate term in the relation hierarchy.
 ~~~ ann
 HSF1 can function as both an activator of heat shock genes and a repressor of non-heat shock genes such as IL1B and c-fos.
-T1	Positive_Regulation	T2
-T1	Negative_Regulation	T3
-T1	Negative_Regulation	T4
-T1	Negative_Regulation	T4
-T1	Regulation_of_Transcription	T5
-T1	Regulation_of_Transcription	T5
+T1	GGP 0 4	HSF1
+T2	GGP 107 111	IL1B
+T3	GGP 116 121	c-fos
+R1 Negative_Regulation Arg1:T1 Arg2:T2
+R2 Negative_Regulation Arg1:T1 Arg2:T3
+R3 Regulation_of_Transcription Arg1:T1 Arg2:T2
+R4 Regulation_of_Transcription Arg1:T1 Arg2:T3
 ~~~
 3.	When the level at which the protein product is regulated at is not clear, then the general term _Regulation of Gene Expression_ should be used.
 ~~~ ann
@@ -137,17 +139,17 @@ We demonstrated that IL-12 directly up-regulates IRF-1 to the same extent as IFN
 T1	GGP 21 26	IL-12
 T2	GGP 49 54	IRF-1
 T3	GGP 77 86	IFN-alpha
-T1	Regulation_of_Gene_Expression	T2
-T3	Regulation_of_Gene_Expression	T2
-T1	Positive_Regulation	T2
-T1	Positive_Regulation	T2
+R1 Regulation_of_Gene_Expression Arg1:T1 Arg2:T2
+R2 Regulation_of_Gene_Expression Arg1:T3 Arg2:T2
+R3 Positive_Regulation Arg1:T1 Arg2:T2
+R4 Positive_Regulation Arg1:T3 Arg2:T2
 ~~~
 4. When positive/negative regulation of the catalysis of a post-translational modification is mentioned then the generic type _"A Regulation B"_ should be used, and no reference to "positive/negative" should be made, if the effect to protein levels is unclear.
 ~~~ ann
 A negatively regulates the phosphorylation of B
 T1	GGP 0 1	A
 T2	GGP 46 47	B
-T1 Regulation T2
+R1 Regulation Arg1:T1 Arg2:T2
 ~~~
 Note: The idea behind using the general term _Regulation_ is that we want to get in there as much as possible in terms of directionality for the edges. So, in order to do that, we will have to be a little bit more flexible with the hierarchy to include something very general that would allow us to have directionality, even in cases where we don’t know the type of effect A has on B, but we know it is upstream. Also, we would have to be a bit more flexible with what we annotate in general and even in cases where we are not 100% sure, to add an annotation (as long as we are pretty certain it is what the authors mean). The relevant GO term is [Regulation of biological process](http://amigo.geneontology.org/amigo/term/GO:0050789)
 5. When _Complex formation_ is not clear, _Regulation_ should be used for annotating a relationship instead e.g. relationship between TNFR1 and TRAF2 in this sentence [9353251](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/complex-formation-batch-02/9353251?focus=sent~6)
@@ -226,10 +228,10 @@ The process is similar to the generation of Complex formation 01 dataset. The in
 
 ### Physical Interaction Databases Abstracts 01
 
-<TODO>
+TODO
 
 ### Physical Interaction Databases Full-text Paragraphs 01
 
-<TODO>
+TODO
 
 For information on Annodoc, see <http://spyysalo.github.io/annodoc/>.

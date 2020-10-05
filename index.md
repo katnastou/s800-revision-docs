@@ -26,7 +26,7 @@ Note that by contrast to the scope of [GO:0032991](http://amigo.geneontology.org
 direct inhibition of NFATp/AP-1 complex formation by a nuclear hormone receptor
 T1	GGP 21 26	NFATp
 T2	GGP 27 31	AP-1
-R10	Complex_formation Arg1:T1 Arg2:T2	 
+R1	Complex_formation Arg1:T1 Arg2:T2	 
 ~~~
 5. __Fusion proteins__ should be treated as one entity for the purposes of annotation and during the creation of the training dataset. These should get an annotator’s note: __Fusion__
   * Note: Due to the inability of marking discontinuous entities, some Fusion proteins have received the Note: __Fusion, discontinuous__ in sentences, example from [11713274](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-01/11713274?focus=sent~10)
@@ -109,43 +109,46 @@ T2	GGP 53 57	Gal4
 
 ### Specific Examples discussed
 
-* Instances of binding and phosphorylation should be seperately annotated as two events when binding is clearly mentioned in text.
+1. Instances of binding and phosphorylation should be seperately annotated as two events when binding is clearly mentioned in text.
 ~~~ ann
 PPP1R12A is phosphorylated at Ser-473 by CDK1 during mitosis, creating docking sites for the POLO box domains of PLK1. Subsequently, PLK1 binds and phosphorylates PPP1R12A.
+T1	GGP 0 8	PPP1R12A
+T2	GGP 41 45	CDK1
+T3	GGP 113 117	PLK1
+T4	GGP 133 137	PLK1
+T5	GGP 163 171	PPP1R12A
+T2 Catalysis_of_phosphorylation T1
+T4 Catalysis_of_phosphorylation T5
+T4 Complex_formation T5
 ~~~
-<pre><code>
-CDK1 Catalysis_of_phosphorylation PPP1R12A
-PLK1 Catalysis_of_phosphorylation PPP1R12A
-</code></pre>
 2. When _Regulation of Transcription_ is implied, it should be preffered over the parent term _Regulation of Gene Expression_, thus annotating the __authors intended meaning in context__ instead of the most accurate term in the relation hierarchy.
 ~~~ ann
 HSF1 can function as both an activator of heat shock genes and a repressor of non-heat shock genes such as IL1B and c-fos.
+T1	Positive Regulation	T2
+T1	Negative Regulation	T3
+T1	Negative Regulation	T4
+T1	Negative Regulation	T4
+T1	Regulation of Transcription	T5
+T1	Regulation of Transcription	T5
 ~~~
-<pre><code>
-HSF1 Positive Regulation heat shock genes
-HSF1 Negative Regulation non-heat shock genes
-HSF1 Negative Regulation IL1B
-HSF1 Negative Regulation c-fos
-HSF1 Regulation of Transcription IL1B
-HSF1 Regulation of Transcription c-fos
-</code></pre>
 3.	When the level at which the protein product is regulated at is not clear, then the general term _Regulation of Gene Expression_ should be used.
 ~~~ ann
 We demonstrated that IL-12 directly up-regulates IRF-1 to the same extent as IFN-alpha in normal human T cells and in NK cells.
+T1	GGP 21 26	IL-12
+T2	GGP 49 54	IRF-1
+T3	GGP 77 86	IFN-alpha
+T1	Regulation of Gene Expression	T2
+T3	Regulation of Gene Expression	T2
+T1	Positive Regulation	T2
+T1	Positive Regulation	T2
 ~~~
-<pre><code>
-IL-12      Regulation of Gene Expression    IRF-1
-IFN-alpha             Regulation of Gene Expression    IRF-1
-IL-12      Positive Regulation               IRF-1
-IFN-alpha             Positive Regulation             IRF-1
-</code></pre>
 4. When positive/negative regulation of the catalysis of a post-translational modification is mentioned then the generic type _"A Regulation B"_ should be used, and no reference to "positive/negative" should be made, if the effect to protein levels is unclear.
 ~~~ ann
 A negatively regulates the phosphorylation of B
+T1	GGP 0 1	A
+T2	GGP 46 47	B
+T1 Regulation T2
 ~~~
-<pre><code>
-A Regulation B
-</code></pre>
 Note: The idea behind using the general term _Regulation_ is that we want to get in there as much as possible in terms of directionality for the edges. So, in order to do that, we will have to be a little bit more flexible with the hierarchy to include something very general that would allow us to have directionality, even in cases where we don’t know the type of effect A has on B, but we know it is upstream. Also, we would have to be a bit more flexible with what we annotate in general and even in cases where we are not 100% sure, to add an annotation (as long as we are pretty certain it is what the authors mean). The relevant GO term is [Regulation of biological process](http://amigo.geneontology.org/amigo/term/GO:0050789)
 5. When _Complex formation_ is not clear, _Regulation_ should be used for annotating a relationship instead e.g. relationship between TNFR1 and TRAF2 in this sentence [9353251](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/complex-formation-batch-02/9353251?focus=sent~6)
 6.  In the current scheme we can annotate the semantics of e.g. "A negatively regulates the expression of B" by assigning _two relations_: _A  negatively regulates B_ AND _A Regulation of Gene Expression B_ 
@@ -155,7 +158,7 @@ Note: The idea behind using the general term _Regulation_ is that we want to get
 In this section I will try to explain the reasoning behind marking some abstracts for removal:
 * The reasoning behind removal and not leaving abstracts simply unannonated is to make sure that abstracts that couldn't be annotated not only are not present on our positive, but also not on our negative examples.
 * Creation of annotations for discontinuous texts (e.g. leaving out a sentence in between two annotated sentences), should be avoided, as this can cause a number of challenges for downstream use, e.g. for ML using contexts larger than isolated sentences. So either entire abstracts are marked for removal or X number of sentences from the beginning or the end of the document (An example is [9845517](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/complex-formation-batch-01/9845517) where only the second to last sentence was confusing, so the last two sentences were removed). These are all indicated with Annotator's notes.
-* It is generally a good idea to get rid of abstracts focusing on Immunoglobulin regions ([this article from UniProt](https://www.uniprot.org/help/immunoglobulins ) on how they try to address the immunoglobulin issue when creating new entries for the database, partially refers to what we discuss). Also, since information like that will never end up in STRING, maybe it’s a good idea to not use such examples neither as positive nor as negative contexts for training. For example in [10228008](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/complex-formation-batch-01/10228008) (I wasn't sure how to annotate relationships in sentences 5, 6 and 7 since these are gene regions, and not the genes themselves)
+* It is generally a good idea to get rid of abstracts focusing on Immunoglobulin regions ([this article from UniProt](https://www.uniprot.org/help/immunoglobulins) on how they try to address the immunoglobulin issue when creating new entries for the database, partially refers to what we discuss). Also, since information like that will never end up in STRING, maybe it’s a good idea to not use such examples neither as positive nor as negative contexts for training. For example in [10228008](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/complex-formation-batch-01/10228008) (I wasn't sure how to annotate relationships in sentences 5, 6 and 7 since these are gene regions, and not the genes themselves)
 
 ## Topics for discussion
 
@@ -197,12 +200,16 @@ In this section I will try to explain the reasoning behind marking some abstract
 
 ### Complex formation 01
 
-The script converting the __BioNLP Shared Task-style event annotation__ into binary relations is found [here](https://github.com/spyysalo/binarize-events/commit/b289b1506ede543aad5f19770f3b687a3ff63976). The initial converted data was the [training set of the BioNLP ST 2009] (http://www.nactem.ac.uk/GENIA/current/Shared-tasks/BioNLP-ST-2009/bionlp09_shared_task_training_data_rev2.tar.gz). The conversion process was as follows:
+The script converting the __BioNLP Shared Task-style event annotation__ into binary relations is found [here](https://github.com/spyysalo/binarize-events/commit/b289b1506ede543aad5f19770f3b687a3ff63976). The initial converted data was the [training set of the BioNLP ST 2009](http://www.nactem.ac.uk/GENIA/current/Shared-tasks/BioNLP-ST-2009/bionlp09_shared_task_training_data_rev2.tar.gz). The conversion process was as follows:
 <pre><code>
 mkdir tmp
-for f in data/bionlp09_shared_task_training_data_rev2/*.a1; do cat ${f%.a1}.{a1,a2} > tmp/$(basename $f .a1).ann; done
+for f in data/bionlp09_shared_task_training_data_rev2/*.a1; do 
+ cat ${f%.a1}.{a1,a2} > tmp/$(basename $f .a1).ann; 
+done
 mkdir binarized
-for f in tmp/*.ann; do python3 binarize.py $f > binarized/$(basename $f); done
+for f in tmp/*.ann; do 
+ python3 binarize.py $f > binarized/$(basename $f); 
+done
 </code></pre>
 The documents in which the converted data contains at least one Complex_formation document were then selected for annotation:
 <pre><code>

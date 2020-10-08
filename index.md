@@ -246,7 +246,7 @@ The process is similar to the generation of Complex formation 01 dataset. The in
 <summary>A step-by-step process is described herein. This is run on yellow.</summary>
 <p>
 
-```shell
+<pre><code>
 ## Lists of PMIDs with interactions from BioGrid, IntAct and MINT
 # Copy lists to yellow from local
 scp PMIDs_all_physical_int.list user@yellow.jensenlab.org:~/full-text-may-2020/ #66757 PMIDs_all_physical_int.list
@@ -465,7 +465,7 @@ cd /home/ubuntu/git_checkout/brat/data/stringdb/physical-interaction-dbs-01/full
 scp user@yellow.jensenlab.org:~/tagger-master/full-text/results/annotation_results/\*.ann ./
 scp user@yellow.jensenlab.org:~/tagger-master/full-text/results/paragraph_text_results/\*.txt ./
 chmod 666 *
-```
+</code></pre>
 
 </p>
 </details>

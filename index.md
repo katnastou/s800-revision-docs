@@ -315,7 +315,7 @@ cp ../full-text-may-2020/full_texts_paragraphs_50_to_500_words.tsv ./full-text/d
 head ./full-text/data/full_texts_paragraphs_50_to_500_words.tsv
 
 #Run tagger
-./tagcorpus --threads=4 --autodetect --documents=./full-text/data/full_texts_paragraphs_50_to_500_words.tsv --types=./data/entity_type_human.tsv --entities=/data/dictionary/all_entities.tsv --names=/data/dictionary/all_names_textmining.tsv --groups=/data/dictionary/all_groups.tsv --stopwords=/data/dictionary/all_global.tsv --out-matches=tagger_matches_full_text_paragraphs_50_to_500_words_1_to_20_ints.tsv 
+./tagcorpus --threads=4 --autodetect --documents=./full-text/data/full_texts_paragraphs_50_to_500_words.tsv --types=./data/entity_type_human.tsv --entities=/data/dictionary/all_entities.tsv --names=/data/dictionary/all_names_textmining.tsv --groups=/data/dictionary/all_groups.tsv --stopwords=/data/dictionary/all_global.tsv --local-stopwords=/data/dictionary/all_local.tsv --out-matches=./full-text/results/tagger_matches_full_text_paragraphs_50_to_500_words_1_to_20_ints_auto_blacklists.tsv 
 
 ##---------------------------------------##
 # Manipulate results file you get from tagger

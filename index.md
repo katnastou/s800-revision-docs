@@ -211,9 +211,9 @@ mkdir binarized
 for f in tmp/*.ann; do 
  python3 binarize.py $f > binarized/$(basename $f); 
 done
-</code></pre>
+```
 The documents in which the converted data contains at least one Complex_formation document were then selected for annotation:
-<pre><code>
+```shell
 egrep -c '^R[0-9]+[[:space:]]Complex_formation' binarized/*.ann | egrep -v ':0$' | wc -l
       97
 ls binarized/*.ann | wc -l
@@ -233,6 +233,7 @@ The process is similar to the generation of Complex formation 01 dataset. The in
 * Split data in abstracts containing entities mentioned __more than 1000 times__ in total (32 unique entities) and abstracts containing entities mentioned __less than 1000 times__ in total (77638 unique entities)
 * Normalize, shuffle and randomly select __313 abstracts__ to annotate (the selection process has changed 3 times, so we started with 200 abstracts but ended up with 313 to keep the balance)
 
+
 ### Physical Interaction Databases Full-text Paragraphs 01
 
 * __12,577 PMC OA__ extracted from [BioGRID](https://thebiogrid.org/), [IntAct](https://www.ebi.ac.uk/intact/) and [MINT](https://mint.bio.uniroma2.it/) describing 1 to 298534 physical or genetic interactions each
@@ -241,6 +242,232 @@ The process is similar to the generation of Complex formation 01 dataset. The in
 * Keep paragraphs where 2-40 entities have been tagged
 * Split data in paragraphs containing entities mentioned __more than 1000 times__ in total (532 unique entities) and paragraphs containing entities mentioned __less than 1000 times__ in total (45037 unique entities)
 * Normalize, shuffle and randomly select __100 paragraphs__ to annotate
+<details>
+<summary>A step-by-step process is described herein. This is run on yellow.</summary>
+<p>
+```shell
+## Lists of PMIDs with interactions from BioGrid, IntAct and MINT
+# Copy lists to yellow from local
+scp PMIDs_all_physical_int.list user@yellow.jensenlab.org:~/full-text-may-2020/ #66757 PMIDs_all_physical_int.list
+scp PMIDs_physical_ints_1-20_interactions.list user@yellow.jensenlab.org:~/full-text-may-2020/ #63998 PMIDs_physical_ints_1-20_interactions.list
+
+# Version sort of PMID numbers
+## we want this file to be version sorted, because the tsv with all documents is 
+## version sorted, and it takes hours to sort that one instead
+sort -V PMIDs_physical_ints_1-20_interactions.list > version_sorted_PMIDs_physical_ints_1-20_interactions.list
+sort -V PMIDs_all_physical_int.list > version_sorted_PMIDs_all_physical_int.list
+
+## add PMID: at the beginning of all lines (not necessary, can do the comparison without it as well)
+sed -i 's/^/PMID:/' version_sorted_PMIDs_physical_ints_1-20_interactions.list
+
+##---------------------------------------##
+
+## Process Full-texts
+-Copy all papers from /data/databases/pmc/
+cp /data/databases/pmc/PMC0*_xml_unicode.en.merged.filtered.tsv.gz ./texts
+
+# make dir texts
+mkdir texts
+cd ./texts
+
+# remove doi from all PMIDs from full-texts
+for f in /data/databases/pmc/PMC0*_xml_unicode.en.merged.filtered.tsv.gz
+do
+    zcat $f | awk 'BEGIN{FS="\t"; OFS="\t"} {gsub(/\|.*/, "", $1); print}' > ${f##*}.nodoi
+done
+
+##---------------------------------------##
+
+##Get full texts for papers of interest
+#Version sort the files
+for f in ./texts/*tsv.gz.nodoi; do sort -k1,1 -V $f > ${f}.sorted; done
+#find all the full-texts 
+for f in ./texts/*.tsv.gz.nodoi.sorted; do awk -F"\t" 'NR==FNR{a[$0];next}$1 in a' version_sorted_PMIDs_physical_ints_1-20_interactions.list $f;done > full_texts_found.tsv
+
+##---------------------------------------##
+
+## Remove short and long paragraphs and feed to tagger
+# the script keeps only paragraphs with more than 50 words and less than 500 words
+# it can also do word counts if I uncomment the lines needed
+# remember tagger file needs PMID: in front
+## also I don't remove the first paragraph after the title to remove abstracts 
+## since abstracts can span more than one paragraph
+# correct script is on yellow - not locally
+
+perl process_full_text_for_tagger_run.pl full_texts_found.tsv full_texts_paragraphs_50_to_500_words.tsv character_counts_per_paragraph.tsv
+
+##---------------------------------------##
+
+## Run tagger on full text articles
+
+-Move to tagger directory
+cd ../tagger-master/
+-Make directory to store data and results
+mkdir full-text
+mkdir full-text/data
+mkdir full-text/results
+
+-Copy input data to new dir
+cp ../full-text-may-2020/full_texts_paragraphs_50_to_500_words.tsv ./full-text/data/
+
+#make sure that the file starts with PMID
+head ./full-text/data/full_texts_paragraphs_50_to_500_words.tsv
+
+#Run tagger
+./tagcorpus --threads=4 --autodetect --documents=./full-text/data/full_texts_paragraphs_50_to_500_words.tsv --types=./data/entity_type_human.tsv --entities=/data/dictionary/all_entities.tsv --names=/data/dictionary/all_names_textmining.tsv --groups=/data/dictionary/all_groups.tsv --stopwords=/data/dictionary/all_global.tsv --out-matches=tagger_matches_full_text_paragraphs_50_to_500_words_1_to_20_ints.tsv 
+
+##---------------------------------------##
+# Manipulate results file you get from tagger
+
+The results file has 8 columns
+1. Pubmed ID
+2. paragraph number
+3. sentence number
+4. first character of the match
+5. last character of the match
+6. term matched
+7. species taxid
+8. Serialno
+
+We have multiple hits with different serial numbers that we do not want. E.g.:
+18197 2 1 192 201 EC 2.3.2.2 9606 23932809
+18197 2 1 192 201 EC 2.3.2.2 9606 23934249
+18197 2 1 192 201 EC 2.3.2.2 9606 23928158
+18197 2 1 192 201 EC 2.3.2.2 9606 23934046
+
+#Find unique lines in that file
+awk '!seen[$1,$2,$3,$4,$5]++' tagger_matches_full_text_paragraphs_50_to_500_words_1_to_20_ints.tsv > tagger_matches_full_text_paragraphs_50_to_500_words_1_to_20_ints_unique.tsv
+
+#find organism lines and remove them
+grep -v -- -3 tagger_matches_full_text_paragraphs_50_to_500_words_1_to_20_ints_unique.tsv > tagger_matches_full_text_paragraphs_50_to_500_words_1_to_20_ints_unique_no_org.tsv
+
+#Since the file is big in order to do the count of entities I will use awk to find those over 1000 times -- this works for single words only
+awk '{for(i=1;i<=NF;i++) a[$i]++} END {for(k in a) print k,a[k]}' <(cut -f8 tagger_matches_full_text_paragraphs_50_to_500_words_1_to_20_ints_unique_no_org.tsv) | sort -k 2 -n > entities_counts.tsv
+
+#Find entities mentioned over 1000 times
+awk '{if ($2>=1000) print $1}' entities_counts.tsv > entities_mentioned_over_1000_times.list
+
+##---------------------------------------##
+
+##Find paragraphs with 2-40 entities
+
+#make seperate files for each PMID_paragraph and remove the original file
+awk -F'\t' '{printf("%s\n",$0) >> $1"_"$2".tsv"; close($1"_"$2".tsv")}' tagger_matches_full_text_paragraphs_50_to_500_words_1_to_20_ints_unique_no_org.tsv
+
+rm tagger_matches_full_text_paragraphs_50_to_500_words_1_to_20_ints_unique_no_org.tsv
+#make a list that counts the matches for each file
+find . -maxdepth 1 -type f -exec wc -l {} \; > lines_per_file.tsv
+
+sort -V lines_per_file.tsv > lines_per_file_sorted.tsv
+
+perl -pe 's/\.\///g' lines_per_file_sorted.tsv | perl -pe 's/\.tsv//g' > lines_per_file_sorted_clean.tsv
+
+awk '{if ($1>=2 && $1<=40) print $2;}' lines_per_file_sorted_clean.tsv > PMID_par_2_to_40_entities.list
+
+perl -pe 's/\_/\t/g'  PMID_par_2_to_40_entities.list > PMID_paragraph_with_2_to_40_entities.tsv
+
+cp PMID_paragraph_with_2_to_40_entities.tsv ../
+cd ../
+perl -pe 's/ /\t/g' PMID_paragraph_with_2_to_40_entities.tsv > PMID_paragraph_with_2_to_40_entities_tab.tsv
+
+#Create new tagger results file for these only
+awk -F"\t" 'FNR==NR {hash[$0]; next} $1"\t"$2 in hash' PMID_paragraph_with_2_to_40_entities.tsv tagger_matches_full_text_paragraphs_50_to_500_words_1_to_20_ints_unique_no_org.tsv > tagger_matches_for_paragraphs_with_2_to_40_entities.tsv
+
+##---------------------------------------##
+# Find the abstracts with 2 to 40 entity mentions that have entities in the 1000 list
+
+# Find PMIDs and paragraphs mentioning these entities + remove titles from these
+awk -F'\t' '{if ($2!=1) print $0}' tagger_matches_for_paragraphs_with_2_to_40_entities.tsv |cut -f1,2,8 | grep -Fw -f entities_mentioned_over_1000_times.list | cut -f1,2 | sort -uV > PMID_parnum_with_entities_with_over_1000_mentions.tsv
+
+# Find the rest of the paragraph entity pairs and remove the titles
+awk -F'\t' '{if ($2!=1) print $0}' tagger_matches_for_paragraphs_with_2_to_40_entities.tsv |cut -f1,2 | sort -uV | grep -Fv -f PMID_parnum_with_entities_with_over_1000_mentions.tsv > PMID_parnum_with_entities_with_under_1000_mentions_notitles.tsv
+
+# There are 226426 PMID_parnum pairs that mention the 532 entities with >1000 mentions
+# There are 121718 PMID_parnum pairs that mention the 45037 entities with <1000 mentions
+# If we select 100 paragraphs from those we need them to be 99 paragraphs from the 121718 and 1 paragraph from the 226426 (this is an approximation since 45000~=500*100)
+
+cd full-text/results
+# RandomlySelect the paragraphs
+shuf -n 1 PMID_parnum_with_entities_with_over_1000_mentions.tsv > 1_random_paragraphs.list
+shuf -n 99 PMID_parnum_with_entities_with_under_1000_mentions_notitles.tsv > 99_random_paragraphs.list
+cat *_random_paragraphs.list > 100_random_paragraphs.list
+
+# Make sure they are not from the same paper
+cut -f1 100_random_paragraphs.list | sort -u  | wc -l 
+#if this isn't 100 randomly reselect
+
+# Make sure they are not from the papers I have already annotated
+#Upload list to yellow
+scp manually_annotated_abstracts_CFB01_CFB02_PIB01.list user@yellow.jensenlab.org:~/tagger-master/full-text/results/
+#compare pmids I selected with the list
+grep -Fv -f manually_annotated_abstracts_CFB01_CFB02_PIB01.list 100_random_paragraphs.list | wc -l
+#if it's not 100 reselect
+
+# Find tagger results for these paragraphs
+while read ptn; do grep -e "^$ptn\b" tagger_matches_full_text_paragraphs_50_to_500_words_1_to_20_ints_unique_no_org.tsv; done < 100_random_paragraphs.list > tagger_matches_for_100_paragraphs.tsv
+
+##---------------------------------------##
+
+# Generate ann files
+# Copy perl script to generate the correct entity starts and ends for brat annotations yellow
+scp correct_entity_start_end.pl user@yellow.jensenlab.org:~/tagger-master/full-text/results
+
+cd annotation_results
+# Run perl script
+perl correct_entity_start_end.pl character_counts_per_paragraph.txt tagger_matches_for_100_paragraphs.txt tagger_matches_for_100_paragraphs_correct_coordinates.txt
+
+# add incremental indexing to files produced
+for f in *.tsv
+do
+    awk -F "\t" '{$1=++i FS $1; printf("T%s\n",$0)}' OFS="\t" $f > "$(basename "$f" .tsv).ann";
+done
+
+###!!!!!!!
+rm *.tsv (!!!!!be careful that the other files are txt before removing
+
+# And .ann files are now ready :) Let's make the text files for each paragraph.
+
+##---------------------------------------##
+
+# Generate text files
+
+cd ../../../../full-text-may-2020
+#get file with PMID and paragraph number
+cp ../tagger-master/full-text/results/100_random_paragraphs.list ./
+
+# Make the results file smaller
+# Grep the 100 PMIDs
+cut -f1 100_random_paragraphs.list > 100_PMIDs_list.list
+while read ptn; do grep ^PMID:$ptn full_texts_paragraphs_50_to_500_words.tsv; done < 100_PMIDs_list.list > 100_full_texts.tsv
+
+cd ../tagger-master/full-text/results/
+cp ../../../full-text-may-2020/100_full_texts.tsv .
+mkdir paragraph_text_results
+cp 100_random_paragraphs.list ./paragraph_text_results/
+cp 100_full_texts.tsv ./paragraph_text_results/
+
+# Copy perl script over
+cd ./paragraph_text_results/
+scp ./Desktop/take_paragraphs_for_brat.pl user@yellow.jensenlab.org:~/tagger-master/full-text/results/paragraph_text_results/
+
+sort -V 100_random_paragraphs.list > 100_random_paragraphs_sorted.list
+sort -V 100_full_texts.tsv > 100_full_texts_sorted.tsv 
+
+# I am not sure if I need to sort
+perl take_paragraphs_for_brat.pl 100_random_paragraphs_sorted.list 100_full_texts_sorted.tsv 
+
+##---------------------------------------##
+
+# Copy files to annotation server
+# Connect to brat server
+cd /home/ubuntu/git_checkout/brat/data/stringdb/physical-interaction-dbs-01/full-text
+scp user@yellow.jensenlab.org:~/tagger-master/full-text/results/annotation_results/\*.ann ./
+scp user@yellow.jensenlab.org:~/tagger-master/full-text/results/paragraph_text_results/\*.txt ./
+chmod 666 *
+```
+</p>
+</details>
+
 
 ### Datasets used to train the models
 

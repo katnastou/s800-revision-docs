@@ -202,7 +202,7 @@ In this section I will try to explain the reasoning behind marking some abstract
 ### Complex formation 01
 
 The script converting the __BioNLP Shared Task-style event annotation__ into binary relations is found [here](https://github.com/spyysalo/binarize-events/commit/b289b1506ede543aad5f19770f3b687a3ff63976). The initial converted data was the [training set of the BioNLP ST 2009](http://www.nactem.ac.uk/GENIA/current/Shared-tasks/BioNLP-ST-2009/bionlp09_shared_task_training_data_rev2.tar.gz). The conversion process was as follows:
-<pre><code>
+```shell
 mkdir tmp
 for f in data/bionlp09_shared_task_training_data_rev2/*.a1; do 
  cat ${f%.a1}.{a1,a2} > tmp/$(basename $f .a1).ann; 
@@ -218,7 +218,7 @@ egrep -c '^R[0-9]+[[:space:]]Complex_formation' binarized/*.ann | egrep -v ':0$'
       97
 ls binarized/*.ann | wc -l
      800
-</code></pre>
+```
 That's 97/800 documents in the original data. While the other 703 could at a minimum serve a useful role in providing negative examples for complex formation, I think it's probably good to at least initially focus on documents likely to provide positive examples.
 
 ### Complex formation 02

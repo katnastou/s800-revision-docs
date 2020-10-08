@@ -245,6 +245,7 @@ The process is similar to the generation of Complex formation 01 dataset. The in
 <details>
 <summary>A step-by-step process is described herein. This is run on yellow.</summary>
 <p>
+
 ```shell
 ## Lists of PMIDs with interactions from BioGrid, IntAct and MINT
 # Copy lists to yellow from local
@@ -465,6 +466,7 @@ scp user@yellow.jensenlab.org:~/tagger-master/full-text/results/annotation_resul
 scp user@yellow.jensenlab.org:~/tagger-master/full-text/results/paragraph_text_results/\*.txt ./
 chmod 666 *
 ```
+
 </p>
 </details>
 

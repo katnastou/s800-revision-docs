@@ -5,7 +5,8 @@ title: Documentation for Typed Relation Annotation
 
 ## General guidelines
 
-Annotations should be made according to the annotator’s best understanding of the __author’s intended meaning in context__. For example, relations expressed using ambiguous verbs such as __"associate"__ that express complex formation in some contexts but not others should be annotated if and only if the annotator interprets the authors as intending to describe complex formation. Annotators __should apply__ their general __background knowledge__ as well as their __domain expertise__ when interpreting author statements.
+* Annotations should be made according to the annotator’s best understanding of the __author’s intended meaning in context__. For example, relations expressed using ambiguous verbs such as __"associate"__ that express complex formation in some contexts but not others should be annotated if and only if the annotator interprets the authors as intending to describe complex formation. The annotators should only use the text excerpt they have available to make this judgement, [(e.g.)](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-01/17982102?focus=sent~10)
+* Annotators should treat named entities as being __masked__, i.e. they shouldn't annotate relationships between entities just based on their names, when they would be unable to make the same annotations for two other entities.
 
 ## Complex formation
 
@@ -19,16 +20,17 @@ Note that by contrast to the scope of [GO:0032991](http://amigo.geneontology.org
 
 ### Detailed guidelines
 
-1. Complex formation relations are only annotated between two different protein mentions. In particular, statements such as “homodimerization of A” __are not annotated__
+1. Complex formation relations can be annotated between two different protein mentions, but also between the same mentions, when the masked entities could be viewed as two different entities, [e.g.](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-01/25588830?focus=sent~7). However, statements such as “homodimerization of A” __are not annotated__ as _Complex formation_
 2. Complexes of more than two proteins are annotated by creating __all binary relations__ between the components
-3. Nominalized expressions (“interaction of A and B”, “A/B interaction”) and noun phrases with __any surface word__ that can be understood as implying the existence of a complex (“A/B complex”, “A/B heterodimer”) are __annotated__ as expressing complex formation relations. However, in the absence of any such word, text such as “A/B” is not annotated. The text A-B will be annotated based on the understanding of the annotator from the entire context (abstract or paragraph) and not based on former biological knowledge. Exception: Sentences like “A is phosphorylated in vitro using B/C (or B-C)” where B is a kinase and C is a cyclin will be annotated as B_complex_formation_C and we will check the error rate in this specific subproblem
+3. Nominalized expressions (“interaction of A and B”, “A/B interaction”) and noun phrases with __any surface word__ that can be understood as implying the existence of a complex (“A/B complex”, “A/B heterodimer”) are __annotated__ as expressing complex formation relations. However, __in the absence of any such word__, text such as “A/B” is not annotated. The text A-B will be annotated based on the understanding of the annotator from the entire context (abstract or paragraph) and not based on former biological knowledge. 
 ~~~ ann
 direct inhibition of NFATp/AP-1 complex formation by a nuclear hormone receptor
 T1	GGP 21 26	NFATp
 T2	GGP 27 31	AP-1
 R1	Complex_formation Arg1:T1 Arg2:T2	 
 ~~~
-5. __Fusion proteins__ should be treated as one entity for the purposes of annotation and during the creation of the training dataset. These should get an annotator’s note: __Fusion__
+Exception: Sentences like “A is phosphorylated in vitro using B/C (or B-C)” where B is a kinase and C is a cyclin have been annotated as "B_complex_formation_C". These can be revertes or we can check the error rate in this specific subproblem.
+5. __Fusion proteins__ should be treated as two entities for the purposes of annotation and during the creation of the training dataset. These should get an _Entity Attribute_: __Fusion__
   * Note: Due to the inability of marking discontinuous entities, some Fusion proteins have received the Note: __Fusion, discontinuous__ in sentences, example from [11713274](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-01/11713274?focus=sent~10)
 ~~~ ann
 full-length NRIF3 fused to the DNA-binding domain of Gal4
@@ -38,8 +40,16 @@ T2	GGP 53 57	Gal4
 6. Relations __should not be interpreted as combinations__, on the contrary each annotated relation should be __valid on each own__ (e.g. _“A positively regulates the proteolytic degradation of B and that leads to the rapid depletion of B”_, should be annotated as _“A regulation_of_proteolysis B”_ and _“A negative_regulation B”_ and not the combination of relations _“A positive_regulation B”_ and _“A regulation_of_proteolysis B”_)
 7. __Co-immunoprecipitation__ can be used as an indicator of complex formation between two protein mentions
 8. _“A regulation_of_proteolysis B”_ does not necessarily imply _"A negative regulation of B"_, so this should be annotated with care
-9. Post-translational modifications should __not__ receive a binding annotation unless binding is clearly mentioned in context. PTMs imply transient interactions which will not be present in physical interaction databases, so they shouldn't be annotated as such. For an example of a corner case see [General examples](#general-examples-not-from-the-corpus)
-
+9. Post-translational modifications should __not__ receive a binding annotation unless binding is clearly mentioned in context. PTMs imply transient interactions which will not be present in physical interaction databases, so they shouldn't be annotated as such. For an example of a corner case see [Specific examples](#specific-examples-discussed)
+10. The following are generally understood as implying _Complex formation_:
+  * consitutive association
+  * stable association
+11. The following are generally understood as __NOT__ implying _Complex formation_:
+  * synergize
+  * stabilize
+12. If __part of a protein/complex__ has the ability to __form a complex__, then the ability of the entire protein/complex to do the same can be extrapolated from that. 
+13. _Domains_ and other parts of proteins should __NOT__ be annotated as _GGP_
+14. Subcellular localization is not annotated for _Complex formation_ even if the structure is made of proteins.
 
 ### Negation and speculation
 
@@ -52,60 +62,60 @@ T2	GGP 53 57	Gal4
 2. The words _“complex”_, _“family”_ and _"group"_ should __not__ be part of the entity annotations.
 3. Plural forms should be marked as “plural” in the annotation notes only if the protein(s) mentioned do not form a complex, do not belong in the same family or cannot be considered as forming a group.
 4. The following complexes/families/groups should get the corresponding annotations (Exception: if in specific organisms a family is only represented by one protein member and in that organism the names of the family and the protein entity __coincide__, then the context should be used to adress how that mention should be annotated).
-  * NF-kappaB: __Complex__
-  * kappa B: __Complex__
-  * NF-kappaB/Rel: __Complex__ (annotated as 1 entity)
-  * AP-1: __Complex__
-  * AP-2: __Complex__
-  * TFIID: __Complex__
-  * LPT: __Complex__
-  * AMPK: __Complex__
-  * Cohesin: __Complex__
-  * Condesin: __Complex__
-  * SMC: __Complex__
-  * NFAT: __Family__
-  * Rel: __Family__
-  * TNF: __Family__
-  * Ets: __Family__
-  * EGR: __Family__
-  * GATA: __Family__
-  * TNFR: __Family__
-  * TcR: __Family__
-  * CREB/ATF: __Family__
-  * RIP: __Family__
-  * I kappa B: __Family__
-  * STAT: __Family__
-  * TRAF: __Family__
-  * GPCR (7TMR): __Family__
-  * G-protein: __Family__
-  * GRK: __Family__
-  * EBS: __Family__
-  * Caveolin: __Family__
-  * HSP: __Family__
-  * Presenilin: __Family__
-  * Wnt: __Family__
-  * Frizzled: __Family__
-  * PKC: __Family__
-  * JNK: __Family__
-  * C-terminal binding proteins (CtBPs): __Family__
-  * CDK: __Family__
-  * FGFR: __Family__
-  * 14-3-3: __Family__
-  * SIK: __Family__
-  * E2F: __Group__
-  * MHC class I: __Group__
-  * MHC class II: __Group__
-  * ERK: __Group__
-  * MEK: __Group__
-  * E1: __Group__
-  * E2: __Group__
-  * E3: __Group__
-  * Histones: __Group__
-  * TOR: __Group__
-  * T Cell Factor (TCF): __Group__
-  * HDAC: __Class__
-  * Dopamine receptors: __Class__
-5. Annotations should be applied to all variants: e.g. __NF kappaB__, __NF-kappaB__, __NFkappaB__ should all be marked as __Complex__
+  * NF-kappaB: __Protein-containing complex__
+  * kappa B: __Protein-containing complex__
+  * NF-kappaB/Rel: __Protein-containing complex__ (annotated as 1 entity)
+  * AP-1: __Protein-containing complex__
+  * AP-2: __Protein-containing complex__
+  * TFIID: __Protein-containing complex__
+  * LPT: __Protein-containing complex__
+  * AMPK: __Protein-containing complex__
+  * Cohesin: __Protein-containing complex__
+  * Condesin: __Protein-containing complex__
+  * SMC: __Protein-containing complex__
+  * NFAT: __Protein family or group__
+  * Rel: __Protein family or group__
+  * TNF: __Protein family or group__
+  * Ets: __Protein family or group__
+  * EGR: __Protein family or group__
+  * GATA: __Protein family or group__
+  * TNFR: __Protein family or group__
+  * TcR: __Protein family or group__
+  * CREB/ATF: __Protein family or group__
+  * RIP: __Protein family or group__
+  * I kappa B: __Protein family or group__
+  * STAT: __Protein family or group__
+  * TRAF: __Protein family or group__
+  * GPCR (7TMR): __Protein family or group__
+  * G-protein: __Protein family or group__
+  * GRK: __Protein family or group__
+  * EBS: __Protein family or group__
+  * Caveolin: __Protein family or group__
+  * HSP: __Protein family or group__
+  * Presenilin: __Protein family or group__
+  * Wnt: __Protein family or group__
+  * Frizzled: __Protein family or group__
+  * PKC: __Protein family or group__
+  * JNK: __Protein family or group__
+  * C-terminal binding proteins (CtBPs): __Protein family or group__
+  * CDK: __Protein family or group__
+  * FGFR: __Protein family or group__
+  * 14-3-3: __Protein family or group__
+  * SIK: __Protein family or group__
+  * E2F: __Protein family or group__
+  * MHC class I: __Protein family or group__
+  * MHC class II: __Protein family or group__
+  * ERK: __Protein family or group__
+  * MEK: __Protein family or group__
+  * E1: __Protein family or group__
+  * E2: __Protein family or group__
+  * E3: __Protein family or group__
+  * Histones: __Protein family or group__
+  * TOR: __Protein family or group__
+  * T Cell Factor (TCF): __Protein family or group__
+  * HDAC: __Protein family or group__
+  * Dopamine receptors: __Protein family or group__
+5. Annotations should be applied to all variants: e.g. __NF kappaB__, __NF-kappaB__, __NFkappaB__ should all be marked as __Protein-containing complex__
 
 ### Specific Examples discussed
 
@@ -163,16 +173,17 @@ In this section I will try to explain the reasoning behind marking some abstract
 
 ## Topics for discussion
 
-* Add classes for Complex, Family, Group, Class?
-* Cytokines as a group of entities are not annotated. Should we change that rule?
+* Add classes for Complex, Family, Group, Class? Added
+* Cytokines as a group of entities are not annotated. Should we change that rule? No
 * How should we treat pathways? E.g. TOR pathway? Originally I didn’t annotate those, but later it made more sense to annotate TOR as a group, as one can view that as negative example. Not really sure which approach is best.
 * I have added histone acetylation/deacetylation as interactions, not sure if we want those
 * Amino acids are not annotated as chemicals unless they are not part of the polypeptide chain
 * Should we annotate ubiquitin and E1, E2, E3 ligases? Also when the mention is E3 ubiquitin ligase, should it be annotated as one mention or E3 ligase as one and ubiquitin as another? 
-* Do we annotate complex formation for proteins across species? E.g. viral-host interactions. I am not sure if that is consistent across the corpus, but I generally tried to annotate cross-species relationships when they were viral-host interactions.
+* Do we annotate complex formation for proteins across species? E.g. viral-host interactions. I am not sure if that is consistent across the corpus, but I generally tried to annotate cross-species relationships when they were viral-host interactions. Yes we do annotate those
 * How do we annotate interactions between proteins when one or both partners carry mutations that alter their physicochemical behavior?
 * when will we tag “regulation of proteolysis” and when “catalysis of ubiquitination” if the ubiquitin system is involved?
-* Should we rethink homodimers? I have only annotated very few cases with an annotators note.
+* Should we rethink homodimers? I have only annotated very few cases with an annotators note. Add homodimer annotations when 2 different entities
+* How do we annotate A is a substrate of B-mediated phoshorylation?
 
 ## Relation type hierarchy (as of 27/02/2020)
 

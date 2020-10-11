@@ -58,7 +58,7 @@ T2	GGP 53 57	Gal4
 
 ### Specific rules for complexes/families and plural form annotations
 
-1. __Complexes__, __Families__ and __Groups__ of proteins receive a __GGP__ annotation and an Annotator's __Note__ (_“Complex”_, _“Family”_, _"Group"_) stating their type.
+1. __Complexes__, __Families__ and __Groups__ of proteins received a __GGP__ annotation and an Annotator's __Note__ (_“Complex”_, _“Family”_, _"Group"_) stating their type. New types for __Complexes__ (__Protein-containing complex__) and for protein __Families__ and __Groups__ (__Protein family or group__) have been introduced and these should be used instead of 
 2. The words _“complex”_, _“family”_ and _"group"_ should __not__ be part of the entity annotations.
 3. Plural forms should be marked as “plural” in the annotation notes only if the protein(s) mentioned do not form a complex, do not belong in the same family or cannot be considered as forming a group.
 4. The following complexes/families/groups should get the corresponding annotations (Exception: if in specific organisms a family is only represented by one protein member and in that organism the names of the family and the protein entity __coincide__, then the context should be used to adress how that mention should be annotated).

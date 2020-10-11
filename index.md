@@ -25,8 +25,8 @@ Note that by contrast to the scope of [GO:0032991](http://amigo.geneontology.org
 3. Nominalized expressions (“interaction of A and B”, “A/B interaction”) and noun phrases with __any surface word__ that can be understood as implying the existence of a complex (“A/B complex”, “A/B heterodimer”) are __annotated__ as expressing complex formation relations. However, __in the absence of any such word__, text such as “A/B” is not annotated. The text A-B will be annotated based on the understanding of the annotator from the entire context (abstract or paragraph) and not based on former biological knowledge. 
 ~~~ ann
 direct inhibition of NFATp/AP-1 complex formation by a nuclear hormone receptor
-T1	GGP 21 26	NFATp
-T2	GGP 27 31	AP-1
+T1	Complex 21 26	NFATp
+T2	Complex 27 31	AP-1
 R1	Complex_formation Arg1:T1 Arg2:T2	 
 ~~~
 Exception: Sentences like “A is phosphorylated in vitro using B/C (or B-C)” where B is a kinase and C is a cyclin have been annotated as "B_complex_formation_C". These can be revertes or we can check the error rate in this specific subproblem.

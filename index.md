@@ -22,16 +22,15 @@ Note that by contrast to the scope of [GO:0032991](http://amigo.geneontology.org
 
 1. Complex formation relations can be annotated between two different protein mentions, but also between the same mentions, when the masked entities could be viewed as two different entities, [e.g.](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-01/25588830?focus=sent~7). However, statements such as “homodimerization of A” __are not annotated__ as _Complex formation_
 2. Complexes of more than two proteins are annotated by creating __all binary relations__ between the components
-3. Nominalized expressions (“interaction of A and B”, “A/B interaction”) and noun phrases with __any surface word__ that can be understood as implying the existence of a complex (“A/B complex”, “A/B heterodimer”) are __annotated__ as expressing complex formation relations. However, __in the absence of any such word__, text such as “A/B” is not annotated. The text A-B will be annotated based on the understanding of the annotator from the entire context (abstract or paragraph) and not based on former biological knowledge. 
+3. Nominalized expressions (“interaction of A and B”, “A/B interaction”, "A:B complex") and noun phrases with __any surface word__ that can be understood as implying the existence of a complex (“A/B complex”, “A/B heterodimer”) are __annotated__ as expressing complex formation relations. However, __in the absence of any such word__, text such as “A/B” is not annotated. The text A-B will be annotated based on the understanding of the annotator from the entire context (abstract or paragraph) and not based on former biological knowledge. 
 ~~~ ann
 direct inhibition of NFATp/AP-1 complex formation by a nuclear hormone receptor
 T1	GGP 21 26	NFATp
 T2	Complex 27 31	AP-1
 R1	Complex_formation Arg1:T1 Arg2:T2	 
 ~~~
-Exception: Sentences like “A is phosphorylated in vitro using B/C (or B-C)” where B is a kinase and C is a cyclin have been annotated as "B_complex_formation_C". These can be revertes or we can check the error rate in this specific subproblem.
-5. __Fusion proteins__ should be treated as two entities for the purposes of annotation and during the creation of the training dataset. These should get an _Entity Attribute_: __Fusion__
-  * Note: Due to the inability of marking discontinuous entities, some Fusion proteins have received the Note: __Fusion, discontinuous__ in sentences, example from [11713274](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-01/11713274?focus=sent~10)
+Exception: Sentences like “A is phosphorylated in vitro using B/C (or B-C)” where B is a kinase and C is a cyclin have been annotated as "B_complex_formation_C". These can be reverted or we can check the error rate in this specific subproblem.
+5. __Fusion proteins__ should be treated as two entities for the purposes of annotation and during the creation of the training dataset. These should get an _Entity Attribute_: __Fusion__. The reporter protein in fusion should get a note: __not tagged by tagger__ if it is not detect by tagger. E.g. in this document __NRIF3__ will receive an _Entity Attribute_: __Fusion__ and __Gal4__ will receive an _Entity Attribute_: __Fusion__ and a _Note: not tagged by tagger_ [11713274](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-01/11713274?focus=sent~10)
 ~~~ ann
 full-length NRIF3 fused to the DNA-binding domain of Gal4
 T1	GGP 12 17	NRIF3
@@ -50,6 +49,29 @@ T2	GGP 53 57	Gal4
 12. If __part of a protein/complex__ has the ability to __form a complex__, then the ability of the entire protein/complex to do the same can be extrapolated from that. 
 13. _Domains_ and other parts of proteins should __NOT__ be annotated as _GGP_
 14. Subcellular localization is not annotated for _Complex formation_ even if the structure is made of proteins.
+15. When an entity is a substrate of another entity then the relation connecting them is __Catalysis of protein modification__ e.g from [18312697](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/18312697_17)
+~~~ann
+the most plausible candidates as SCFFbh1 substrates are HR proteins
+T1	Complex 33 40	SCFFbh1
+T2	Family 56 58	HR
+R1	Catalysis_of_protein_modification Arg1:T1 Arg2:T2	 
+~~~
+16. Determiners like _the_ should not be included in the entity span of __GGP__, __Protein-containing complex__ and __Protein family or group__
+17. Mutants of specific proteins will receive __GGP__ annotations and an _Entity Attribute_: __Mutant__
+18. In order for the annotated text to be as close as possible to the ideal NE annotation produced by the NER system, cases where only part-of __mutant names__ are standalone entities, only these mentions should be annotated, e.g. in the following example from [18039934](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/18039934_11) __sam35__ and __NOT__ _sam35-2_ is annotated as a ggp
+~~~ann
+The essential protein Sam35 was addressed through use of the temperature-sensitive yeast mutant sam35-2.
+T1	GGP 22 27	Sam35
+T2	GGP 96 101	sam35
+~~~
+An exception is when __mutant names are a single word__, and then they are annotated as one mutant entity e.g. __rex1Delta__ in the following sentence from [16100378](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/16100378_25)
+~~~ann
+However, both the rex1Delta strain and the rex1-1 strain are indistinguishable from wild type.
+T1	GGP 18 27	rex1Delta
+T2	GGP 43 47	rex1
+~~~
+19. Named entities that are part of antibodies should be annotated as the corresponding NE type and should receive a _Note: antibody_, e.g. from [20214800](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/20214800_12) ***TBD: antibodies that are one entity mention with "anti" included: http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/15520228_40***
+20. RNA is currently annotated as __GGP__ [e.g.](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/16100378_25?focus=sent~1)
 
 ### Negation and speculation
 
@@ -62,26 +84,26 @@ T2	GGP 53 57	Gal4
 2. The words _“complex”_, _“family”_ and _"group"_ should __not__ be part of the entity annotations.
 3. Plural forms should be marked as “plural” in the annotation notes only if the protein(s) mentioned do not form a complex, do not belong in the same family or cannot be considered as forming a group.
 4. The following complexes/families/groups should get the corresponding annotations (Exception: if in specific organisms a family is only represented by one protein member and in that organism the names of the family and the protein entity __coincide__, then the context should be used to adress how that mention should be annotated).
-  * NF-kappaB: __Protein-containing complex__
-  * kappa B: __Protein-containing complex__
+  * [NF-kappaB](http://amigo.geneontology.org/amigo/term/GO:0071159): __Protein-containing complex__
+  * [kappa B](http://amigo.geneontology.org/amigo/term/GO:0071159): __Protein-containing complex__
   * NF-kappaB/Rel: __Protein-containing complex__ (annotated as 1 entity)
-  * AP-1: __Protein-containing complex__
-  * AP-2: __Protein-containing complex__
-  * TFIID: __Protein-containing complex__
-  * LPT: __Protein-containing complex__
-  * AMPK: __Protein-containing complex__
-  * Cohesin: __Protein-containing complex__
-  * Condesin: __Protein-containing complex__
-  * SMC: __Protein-containing complex__
-  * NFAT: __Protein family or group__
-  * Rel: __Protein family or group__
-  * TNF: __Protein family or group__
-  * Ets: __Protein family or group__
-  * EGR: __Protein family or group__
-  * GATA: __Protein family or group__
-  * TNFR: __Protein family or group__
+  * [AP-1](http://amigo.geneontology.org/amigo/term/GO:0030121): __Protein-containing complex__
+  * [AP-2](http://amigo.geneontology.org/amigo/term/GO:0030122): __Protein-containing complex__
+  * [TFIID](http://amigo.geneontology.org/amigo/term/GO:0005669): __Protein-containing complex__
+  * LPT: __Protein-containing complex__, [maybe](http://amigo.geneontology.org/amigo/term/GO:0046696)
+  * [AMPK](http://amigo.geneontology.org/amigo/term/GO:0031588): __Protein-containing complex__
+  * [Cohesin](http://amigo.geneontology.org/amigo/term/GO:0000798): __Protein-containing complex__
+  * [Condensin](http://amigo.geneontology.org/amigo/term/GO:0000796): __Protein-containing complex__
+  * [SMC](http://amigo.geneontology.org/amigo/term/GO:0000796): __Protein-containing complex__
+  * [NFAT](https://www.sciencedirect.com/science/article/pii/B9780123741455002540): __Protein family or group__
+  * [Rel](https://www.sciencedirect.com/science/article/abs/pii/S0959440X9680100X?via%3Dihub): __Protein family or group__
+  * [TNF](https://pfam.xfam.org/family/PF00229): __Protein family or group__
+  * [Ets](https://pfam.xfam.org/family/PF00178): __Protein family or group__
+  * [EGR](https://meshb.nlm.nih.gov/record/ui?name=Early%20Growth%20Response%20Transcription%20Factors): __Protein family or group__
+  * [GATA](https://pfam.xfam.org/family/PF00320): __Protein family or group__
+  * [TNFR](https://www.sciencedirect.com/science/article/pii/B9780123786302003583): __Protein family or group__
   * TcR: __Protein family or group__
-  * CREB/ATF: __Protein family or group__
+  * [CREB/ATF](https://www.sciencedirect.com/topics/neuroscience/atf-creb): __Protein family or group__
   * RIP: __Protein family or group__
   * I kappa B: __Protein family or group__
   * STAT: __Protein family or group__
@@ -163,6 +185,16 @@ R1 Regulation Arg1:T1 Arg2:T2
 Note: The idea behind using the general term _Regulation_ is that we want to get in there as much as possible in terms of directionality for the edges. So, in order to do that, we will have to be a little bit more flexible with the hierarchy to include something very general that would allow us to have directionality, even in cases where we don’t know the type of effect A has on B, but we know it is upstream. Also, we would have to be a bit more flexible with what we annotate in general and even in cases where we are not 100% sure, to add an annotation (as long as we are pretty certain it is what the authors mean). The relevant GO term is [Regulation of biological process](http://amigo.geneontology.org/amigo/term/GO:0050789)
 5. When _Complex formation_ is not clear, _Regulation_ should be used for annotating a relationship instead e.g. relationship between TNFR1 and TRAF2 in this sentence [9353251](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/complex-formation-batch-02/9353251?focus=sent~6)
 6.  In the current scheme we can annotate the semantics of e.g. "A negatively regulates the expression of B" by assigning _two relations_: _A  negatively regulates B_ AND _A Regulation of Gene Expression B_ 
+7. The following is a __part-of relationship__ and not complex formation, so it should be annotated as __Out-of-scope__ [16380507](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/16380507_12)
+~~~ann
+However, GR was not recruited to the p65-NF-kappaB complex after HDAC2 KD.
+T1	GGP 9 11	GR
+T2	GGP 37 40	p65
+T3	Complex 41 50	NF-kappaB
+T4	GGP 65 70	HDAC2
+R1 Out-of-scope Arg1:T2 Arg2:T3
+~~~
+8. In document [19328066](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/19328066_4), _Mex67:Mtr2_, _NXF1:NXT1_ and _TAP:P15_ represent protein heterodimers and have been annotated as such, since the first sentence mentions __Mex67:Mtr2 heterodimer__ denoting that in the document _:_ can be used to represent _heterodimers_.
 
 ### Removed abstracts
 
@@ -207,6 +239,40 @@ In this section I will try to explain the reasoning behind marking some abstract
   * Catalysis_of_ubiquitination
   * Catalysis_of_deubiquitination
 * Other  
+
+## Inter-annotator agreement
+
+### IAA batch-01
+
+```
+Precision = 46/56 = ~82%
+Recall = 46/46 = 100%
+F-score = ~90%
+```
+
+### IAA batch-02
+
+```
+Precision: 78/83 = ~94.0%
+Recall: 78/84 = ~92.9%
+F = ~93.4%
+```
+
+### IAA batch-03
+
+```
+Precision: 23/25 = ~92.0%
+Recall: 23/25 = ~92.0%
+F = ~92.0%
+```
+
+### IAA batch-04
+
+```
+Precision: 86/100 = ~86.0%
+Recall: 86/88 = ~97.7%
+F = ~91.5%
+```
 
 ## Annotation Dataset Generation
 

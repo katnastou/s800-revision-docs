@@ -547,6 +547,79 @@ chmod 666 *
 </p>
 </details>
 
+### Physical Interaction Databases Full-text Paragraphs 02
+
+* Follow the same strategy as above but this time select 300 paragraphs from full-text
+
+<details>
+<summary>A step-by-step process is described herein. This is run on yellow.</summary>
+<p>
+
+<pre><code>
+cd tagger-master/full-text/
+
+#create list with current PMIDs
+cat manually_annotated_abstracts_CFB01_CFB02_PIB01.list physical-interaction-dbs-full-texts-01_paragraph_list.list > manually_annotated_abstracts_CFB01_CFB02_PIBA01_PIBFT01.list
+#remove paragraph information
+perl -pe 's/_.*//g' manually_annotated_abstracts_CFB01_CFB02_PIBA01_PIBFT01.list > tmp && mv tmp manually_annotated_abstracts_CFB01_CFB02_PIBA01_PIBFT01.list 
+#select random paragraphs based on split documents
+shuf -n 3 PMID_parnum_with_entities_with_over_1000_mentions.tsv > 3_random_paragraphs_02.list
+shuf -n 297 PMID_parnum_with_entities_with_under_1000_mentions_notitles.tsv > 297_random_paragraphs_02.list
+
+cat *_random_paragraphs_02.list > 300_random_paragraphs_02.list
+#Make sure they are not from the same paper
+cut -f1 300_random_paragraphs_02.list | sort -u  | wc -l 
+#if this isn't 300 randomly reselect
+#Make sure they are not from the papers I have already annotated
+grep -Fv -f manually_annotated_abstracts_CFB01_CFB02_PIBA01_PIBFT01.list 300_random_paragraphs_02.list | wc -l
+#if it's not 300 reselect
+
+grep -P "\t" 300_random_paragraphs_02.list | wc -l
+
+#Find tagger results for these paragraphs
+while read ptn; do grep -e "^$ptn\b" tagger_matches_full_text_paragraphs_50_to_500_words_1_to_20_ints_unique_no_org.tsv; done < 300_random_paragraphs_02.list > tagger_matches_for_300_paragraphs.txt
+
+##---------------------------------------##
+
+#Generate ann files
+mkdir annotation_results_02
+cd annotation_results_02/
+
+#Copy perl script to generate the correct entity starts and ends for brat annotations yellow
+cp ../annotation_results/correct_entity_start_end.pl . #copy and correct before execution
+cp ../annotation_results/character_counts_per_paragraph.txt  .
+perl correct_entity_start_end.pl character_counts_per_paragraph.txt tagger_matches_for_300_paragraphs.txt tagger_matches_for_300_paragraphs_correct_coordinates.txt
+#add incremental indexing to files produced
+for f in *.tsv; do awk -F "\t" '{$1=++i FS $1; printf("T%s\n",$0)}' OFS="\t" $f > "$(basename "$f" .tsv).ann"; done
+rm *.tsv (!!!!!be careful that the other files are txt before removing
+
+##---------------------------------------##
+
+#Generate text files
+#Grep the 300 PMIDs
+cut -f1 300_random_paragraphs_02.list > 300_PMIDs_list.list
+while read ptn; do grep ^PMID:$ptn /jensenlab/home/knastou/full-text-may-2020/full_texts_paragraphs_50_to_500_words.tsv; done < 300_PMIDs_list.list > 300_full_texts.tsv
+mkdir paragraph_text_results_02/
+cp 300_random_paragraphs_02.list ./paragraph_text_results_02/
+cp 300_full_texts.tsv ./paragraph_text_result_02/
+
+#Copy perl script over
+cp ../paragraph_text_results/take_paragraphs_for_brat.pl .
+sort -V 300_random_paragraphs_02.list > 300_random_paragraphs_sorted.list
+sort -V 300_full_texts.tsv > 300_full_texts_sorted.tsv
+perl take_paragraphs_for_brat.pl 300_random_paragraphs_sorted.list 300_full_texts_sorted.tsv 
+
+#Copy files to annotation server
+#Connect to brat server first
+cd /home/ubuntu/git_checkout/brat/data/stringdb/physical-interaction-dbs-01/full-text-02
+scp user@yellow.jensenlab.org:~/tagger-master/full-text/results/annotation_results_02/\*.ann ./
+scp user@yellow.jensenlab.org:~/tagger-master/full-text/results/paragraph_text_results/\*.txt ./
+chmod 666 *
+</code></pre>
+
+</p>
+</details>
+
 
 ### Datasets used to train the models
 

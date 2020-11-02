@@ -16,7 +16,7 @@ Relevant ontology terms:
 * [GO:0032984](http://amigo.geneontology.org/amigo/term/GO:0032984) (__protein-containing complex disassembly__): The disaggregation of a protein-containing macromolecular complex into its constituent components.
 * [GO:0032991](http://amigo.geneontology.org/amigo/term/GO:0032991) (__protein-containing complex__): A stable assembly of two or more macromolecules, i.e. proteins, nucleic acids, carbohydrates or lipids, in which at least one component is a protein and the constituent parts function together.
 
-Note that by contrast to the scope of [GO:0032991](http://amigo.geneontology.org/amigo/term/GO:0032991) (protein-containing complex) and related terms, the annotated complex formation relation is restricted to cases where both of the associated constituents are _proteins_, _protein complexes_, _protein families_, _protein groups_ or _chemicals_.
+Note that by contrast to the scope of [GO:0032991](http://amigo.geneontology.org/amigo/term/GO:0032991) (protein-containing complex) and related terms, the annotated complex formation relation is restricted to cases where both of the associated constituents are _proteins_, _protein complexes_, _protein families_, _groups of proteins_ or _chemicals_.
 
 ### Detailed guidelines
 
@@ -30,35 +30,44 @@ T2	Complex 27 31	AP-1
 R1	Complex_formation Arg1:T1 Arg2:T2	 
 ~~~
 Exception: Sentences like “A is phosphorylated in vitro using B/C (or B-C)” where B is a kinase and C is a cyclin have been annotated as "B_complex_formation_C". These can be reverted or we can check the error rate in this specific subproblem.
-5. __Fusion proteins__ should be treated as two entities for the purposes of annotation and during the creation of the training dataset. These should get an _Entity Attribute_: __Fusion__. The reporter protein in fusion should get a note: __not tagged by tagger__ if it is not detect by tagger. E.g. in this document __NRIF3__ will receive an _Entity Attribute_: __Fusion__ and __Gal4__ will receive an _Entity Attribute_: __Fusion__ and a _Note: not tagged by tagger_ [11713274](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-01/11713274?focus=sent~10)
-~~~ ann
-full-length NRIF3 fused to the DNA-binding domain of Gal4
-T1	GGP 12 17	NRIF3
-T2	GGP 53 57	Gal4
-~~~
-6. Relations __should not be interpreted as combinations__, on the contrary each annotated relation should be __valid on each own__ (e.g. _“A positively regulates the proteolytic degradation of B and that leads to the rapid depletion of B”_, should be annotated as _“A regulation_of_proteolysis B”_ and _“A negative_regulation B”_ and not the combination of relations _“A positive_regulation B”_ and _“A regulation_of_proteolysis B”_)
-7. __Co-immunoprecipitation__ can be used as an indicator of complex formation between two protein mentions
-8. _“A regulation_of_proteolysis B”_ does not necessarily imply _"A negative regulation of B"_, so this should be annotated with care
-9. Post-translational modifications should __not__ receive a binding annotation unless binding is clearly mentioned in context. PTMs imply transient interactions which will not be present in physical interaction databases, so they shouldn't be annotated as such. For an example of a corner case see [Specific examples](#specific-examples-discussed)
-10. The following are generally understood as implying _Complex formation_:
+4. Relations __should not be interpreted as combinations__, on the contrary each annotated relation should be __valid on each own__ (e.g. _“A positively regulates the proteolytic degradation of B and that leads to the rapid depletion of B”_, should be annotated as _“A regulation_of_proteolysis B”_ and _“A negative_regulation B”_ and not the combination of relations _“A positive_regulation B”_ and _“A regulation_of_proteolysis B”_)
+5. __Co-immunoprecipitation__ can be used as an indicator of complex formation between two protein mentions
+6. _“A regulation_of_proteolysis B”_ does not necessarily imply _"A negative regulation of B"_, so this should be annotated with care
+7. Post-translational modifications should __not__ receive a binding annotation unless binding is clearly mentioned in context. PTMs imply transient interactions which will not be present in physical interaction databases, so they shouldn't be annotated as such. For an example of a corner case see [Specific examples](#specific-examples-discussed)
+8. The following are generally understood as implying _Complex formation_:
   * consitutive association
   * stable association
-11. The following are generally understood as __NOT__ implying _Complex formation_:
+9. The following are generally understood as __NOT__ implying _Complex formation_:
   * synergize
   * stabilize
-12. If __part of a protein/complex__ has the ability to __form a complex__, then the ability of the entire protein/complex to do the same can be extrapolated from that. 
-13. _Domains_ and other parts of proteins should __NOT__ be annotated as _GGP_
-14. Subcellular localization is not annotated for _Complex formation_ even if the structure is made of proteins.
-15. When an entity is a substrate of another entity then the relation connecting them is __Catalysis of protein modification__ e.g from [18312697](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/18312697_17)
+10. If __part of a protein/complex__ has the ability to __form a complex__, then the ability of the entire protein/complex to do the same can be extrapolated from that. 
+11. Subcellular localization is not annotated for _Complex formation_ even if the structure is made of proteins.
+12. When an entity is a substrate of another entity then the relation connecting them is __Catalysis of protein modification__ e.g from [18312697](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/18312697_17)
 ~~~ann
 the most plausible candidates as SCFFbh1 substrates are HR proteins
 T1	Complex 33 40	SCFFbh1
 T2	Family 56 58	HR
 R1	Catalysis_of_protein_modification Arg1:T1 Arg2:T2	 
 ~~~
-16. Determiners like _the_ should not be included in the entity span of __GGP__, __Protein-containing complex__ and __Protein family or group__
-17. Mutants of specific proteins will receive __GGP__ annotations and an _Entity Attribute_: __Mutant__
-18. In order for the annotated text to be as close as possible to the ideal NE annotation produced by the NER system, cases where only part-of __mutant names__ are standalone entities, only these mentions should be annotated, e.g. in the following example from [18039934](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/18039934_11) __sam35__ and __NOT__ _sam35-2_ is annotated as a ggp
+
+### Negation and speculation
+
+1. Statements explicitly __denying__ the formation of a complex (e.g. “A does not bind B”) are __not annotated__ in any way. However, if the negated statement is qualified with conditions in a way that implies that the proteins would normally form a complex, the statement is annotated as if the negation were absent (e.g. _“When A is phosphorylated, it fails to form a complex with B”_).
+2. Statements expressed __speculatively__ or with __hedging__ expressions (e.g. _“may form a complex”_) are __annotated__ identically to affirmative statements (in effect, __speculation and hedging are ignored__).
+
+### Named Entity annotation rules
+
+1. Entity name mentions like _ubiquitin_ or reporter genes (e.g. _GFP_) which are _GGPs_ but are blacklisted by tagger, will be assigned the __blacklisted__ attribute
+2. Histones: 
+  * Tag _H2_, _H3_ etc. when they appear standalone
+  * Include _histone_ in the span when it appears with one of the names (e.g. _histone H3_)
+  * Tag _histone_ as __Protein family or group__ when it appears standalone.
+  * We could then either go discontinuous or decomposed for mentions such as _histones H2A and H3_.
+3. _Amino acid residues_ should not be annotated as __chemical__ when they are part of a polypeptide chain
+4. _Glycosylphosphatidylinosiol_ (GPI) should not be annotated as __chemical__ as it cannot be a standalone chemical
+5. Determiners like _the_ should not be included in the entity span of __GGP__, __Protein-containing complex__ and __Protein family or group__
+6. Mutants of specific proteins will receive __GGP__ annotations and an _Entity Attribute_: __Mutant__
+7. In order for the annotated text to be as close as possible to the ideal NE annotation produced by the NER system, cases where only part-of __mutant names__ are standalone entities, only these mentions should be annotated, e.g. in the following example from [18039934](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/18039934_11) __sam35__ and __NOT__ _sam35-2_ is annotated as a ggp
 ~~~ann
 The essential protein Sam35 was addressed through use of the temperature-sensitive yeast mutant sam35-2.
 T1	GGP 22 27	Sam35
@@ -70,15 +79,25 @@ However, both the rex1Delta strain and the rex1-1 strain are indistinguishable f
 T1	GGP 18 27	rex1Delta
 T2	GGP 43 47	rex1
 ~~~
-19. Named entities that are part of antibodies should be annotated as the corresponding NE type and should receive a _Note: antibody_, e.g. from [20214800](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/20214800_12) ***TBD: antibodies that are one entity mention with "anti" included: http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/15520228_40***
-20. RNA is currently annotated as __GGP__ [e.g.](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/16100378_25?focus=sent~1)
+8. Named entities that are part of antibodies should be annotated as the corresponding NE type and should receive a _Note: antibody_, e.g. from [20214800](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/20214800_12) ***TBD: antibodies that are one entity mention with "anti" included: http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/15520228_40***
+9. RNA is currently annotated as __GGP__ [e.g.](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/16100378_25?focus=sent~1)
+10. __Fusion proteins__ should be treated as two entities for the purposes of annotation and during the creation of the training dataset. These should get an _Entity Attribute_: __Fusion__. The reporter protein in fusion should get a note: __not tagged by tagger__ if it is not detect by tagger. E.g. in this document __NRIF3__ will receive an _Entity Attribute_: __Fusion__ and __Gal4__ will receive an _Entity Attribute_: __Fusion__ and a _Note: not tagged by tagger_ [11713274](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-01/11713274?focus=sent~10)
+~~~ ann
+full-length NRIF3 fused to the DNA-binding domain of Gal4
+T1	GGP 12 17	NRIF3
+T2	GGP 53 57	Gal4
+~~~
+11. _Domains_ and other _protein regions_ should __NOT__ be annotated as _GGP_
+12. _FLAG_ and _6xHis_ are polypeptide protein tags and should receive an _OOS_ annotation, or should not be annotated at all.
 
-### Negation and speculation
-
-1. Statements explicitly __denying__ the formation of a complex (e.g. “A does not bind B”) are __not annotated__ in any way. However, if the negated statement is qualified with conditions in a way that implies that the proteins would normally form a complex, the statement is annotated as if the negation were absent (e.g. _“When A is phosphorylated, it fails to form a complex with B”_).
-2. Statements expressed __speculatively__ or with __hedging__ expressions (e.g. _“may form a complex”_) are __annotated__ identically to affirmative statements (in effect, __speculation and hedging are ignored__).
 
 ### Specific rules for complexes/families and plural form annotations
+
+* If a term is in Gene Ontology and is assigned a [__Protein-containing complex__](http://amigo.geneontology.org/amigo/term/GO:0032991) annotation then it is considered a Complex in this annotation effort, 
+* If a term is found in Gene ontology but it is NOT a __protein-containing complex__, then it will __NOT__ be considered a _Complex_ in this effort
+* If a term is not at all present in Gene Ontology then other resources in the field will be used to decide whether it should be considered a _Complex_ or not (e.g. [Complex Portal](https://www.ebi.ac.uk/complexportal/home), [Reactome](https://reactome.org/)).
+* There is no clear distinction in Gene Ontology between small (e.g. NF-kappaB) and large (e.g. Nuclear Pore) complexes and for this reason, all these complexes will be treated the same and receive a _Complex_ annotation
+* For cases where it is difficult to distinguish [_family_](pfam.xfam.org/family/PF00110#tabview=tab6) from [_domain_](pfam.xfam.org/family/PF05207#tabview=tab6) mentions, the field type in Pfam could be used to aid in making a decision (if available)
 
 1. __Complexes__, __Families__ and __Groups__ of proteins received a __GGP__ annotation and an Annotator's __Note__ (_“Complex”_, _“Family”_, _"Group"_) stating their type. New types for __Complexes__ (__Protein-containing complex__) and for protein __Families__ and __Groups__ (__Protein family or group__) have been introduced and these should be used instead of Annotator's Notes.
 2. The words _“complex”_, _“family”_ and _"group"_ should __not__ be part of the entity annotations.

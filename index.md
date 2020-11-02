@@ -80,7 +80,7 @@ T1	GGP 18 27	rex1Delta
 T2	GGP 43 47	rex1
 ~~~
 8. Named entities that are part of antibodies should be annotated as the corresponding NE type and should receive a _Note: antibody_, e.g. from [20214800](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/20214800_12) ***TBD: antibodies that are one entity mention with "anti" included: http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/15520228_40***
-9. RNA is currently annotated as __GGP__ [e.g.](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/16100378_25?focus=sent~1)
+9. rRNAs are currently annotated as __GGP__ [e.g.](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/16100378_25?focus=sent~1)
 10. __Fusion proteins__ should be treated as two entities for the purposes of annotation and during the creation of the training dataset. These should get an _Entity Attribute_: __Fusion__. The reporter protein in fusion should get a note: __not tagged by tagger__ if it is not detect by tagger. E.g. in this document __NRIF3__ will receive an _Entity Attribute_: __Fusion__ and __Gal4__ will receive an _Entity Attribute_: __Fusion__ and a _Note: not tagged by tagger_ [11713274](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-01/11713274?focus=sent~10)
 ~~~ ann
 full-length NRIF3 fused to the DNA-binding domain of Gal4

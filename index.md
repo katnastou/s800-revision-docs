@@ -234,7 +234,7 @@ In the [very next sentence](http://ann.turkunlp.org:8088/index.xhtml#/string-rel
 T1	GGP 0 4	3BP2
 T2	GGP 41 46	CD244
 R1 Out-of-scope Arg1:T1 Arg2:T2
-R1 Complex_formation Arg1:T1 Arg2:T2
+R2 Complex_formation Arg1:T1 Arg2:T2
 ~~~
 
 ### Removed abstracts

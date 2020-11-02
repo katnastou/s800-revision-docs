@@ -116,11 +116,11 @@ T2	GGP 53 57	Gal4
   * [SMC](http://amigo.geneontology.org/amigo/term/GO:0000796): __Protein-containing complex__
   * [NFAT](https://www.sciencedirect.com/science/article/pii/B9780123741455002540): __Protein family or group__
   * [Rel](https://www.sciencedirect.com/science/article/abs/pii/S0959440X9680100X?via%3Dihub): __Protein family or group__
-  * [TNF](https://pfam.xfam.org/family/PF00229): __Protein family or group__
+
   * [Ets](https://pfam.xfam.org/family/PF00178): __Protein family or group__
   * [EGR](https://meshb.nlm.nih.gov/record/ui?name=Early%20Growth%20Response%20Transcription%20Factors): __Protein family or group__
   * [GATA](https://pfam.xfam.org/family/PF00320): __Protein family or group__
-  * [TNFR](https://www.sciencedirect.com/science/article/pii/B9780123786302003583): __Protein family or group__
+  * [TNFR](https://en.wikipedia.org/wiki/TNF_receptor_superfamily): __Protein family or group__
   * TcR: __Protein family or group__
   * [CREB/ATF](https://www.sciencedirect.com/topics/neuroscience/atf-creb): __Protein family or group__
   * RIP: __Protein family or group__
@@ -156,6 +156,7 @@ T2	GGP 53 57	Gal4
   * T Cell Factor (TCF): __Protein family or group__
   * HDAC: __Protein family or group__
   * Dopamine receptors: __Protein family or group__
+  * [TNF](https://en.wikipedia.org/wiki/Tumor_necrosis_factor_superfamily): __Protein family or group__ OR [TNF](https://www.genecards.org/cgi-bin/carddisp.pl?gene=TNF&fbclid=IwAR0yOLQSkXiZepSeRMmFFCSdurXfkmYDpLUPVbjeX0SeiLfyfscDzkKLAxY): __GGP__
 5. Annotations should be applied to all variants: e.g. __NF kappaB__, __NF-kappaB__, __NFkappaB__ should all be marked as __Protein-containing complex__
 
 ### Specific Examples discussed
@@ -214,6 +215,27 @@ T4	GGP 65 70	HDAC2
 R1 Out-of-scope Arg1:T2 Arg2:T3
 ~~~
 8. In document [19328066](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-full-texts-02/19328066_4), _Mex67:Mtr2_, _NXF1:NXT1_ and _TAP:P15_ represent protein heterodimers and have been annotated as such, since the first sentence mentions __Mex67:Mtr2 heterodimer__ denoting that in the document _:_ can be used to represent _heterodimers_.
+9. In this sentence, it looks like quite clear mentions of Complex formation, but “selectively interact … in a ligand-dependent manner” is the trick and the correct pairs are not clear. 
+~~~ann
+Here we report that PPARgamma and RXR selectively interact with DRIP205 and p160 protein in a ligand-dependent manner
+T1	GGP 20 29	PPARgamma
+T2	GGP 34 37	RXR
+T3	GGP 64 71	DRIP205
+T4	Family 76 80	p160
+R1 Complex_formation Arg1:T1 Arg2:T3
+R2 Complex_formation Arg1:T1 Arg2:T4
+R3 Complex_formation Arg1:T2 Arg2:T3
+R4 Complex_formation Arg1:T2 Arg2:T4
+~~~
+In the [very next sentence](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-02/11027271?focus=sent~8), the authors explain in detail, and only PPARgamma-DRIP205 and RXR-p160 are interacting.
+10. [Here](http://ann.turkunlp.org:8088/index.xhtml#/string-relation-corpus/physical-interaction-dbs-abstracts-02/16177062?focus=sent~7), the PPI occurs only for human CD244. Complex formation and negated Complex formation in a single sentence with coordination.
+~~~ann
+3BP2 interacts with human but not murine CD244
+T1	GGP 0 4	3BP2
+T2	GGP 41 46	CD244
+R1 Out-of-scope Arg1:T1 Arg2:T2
+R1 Complex_formation Arg1:T1 Arg2:T2
+~~~
 
 ### Removed abstracts
 

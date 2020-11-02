@@ -116,7 +116,6 @@ T2	GGP 53 57	Gal4
   * [SMC](http://amigo.geneontology.org/amigo/term/GO:0000796): __Protein-containing complex__
   * [NFAT](https://www.sciencedirect.com/science/article/pii/B9780123741455002540): __Protein family or group__
   * [Rel](https://www.sciencedirect.com/science/article/abs/pii/S0959440X9680100X?via%3Dihub): __Protein family or group__
-
   * [Ets](https://pfam.xfam.org/family/PF00178): __Protein family or group__
   * [EGR](https://meshb.nlm.nih.gov/record/ui?name=Early%20Growth%20Response%20Transcription%20Factors): __Protein family or group__
   * [GATA](https://pfam.xfam.org/family/PF00320): __Protein family or group__

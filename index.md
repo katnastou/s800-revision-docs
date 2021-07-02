@@ -249,7 +249,7 @@ In this section I will try to explain the reasoning behind marking some abstract
 * How should we treat pathways? E.g. TOR pathway? Originally I didn’t annotate those, but later it made more sense to annotate TOR as a group, as one can view that as negative example. Not really sure which approach is best.
 * Amino acids are not annotated as chemicals unless they are not part of the polypeptide chain.
 * ATP, GTP, GDP, ADP are not annotated as chemicals
-* E1, E2, E3 ubiquitin ligases are annotated as __Protein family or group__. When _E3 ubiquitin ligase_ is written in text then annotate the whole entity, same for _E3 ligase_ and finally annotate _E3_ as standalone. Same for E1 and E2. And same for _SUMO E3 ligase_ etc.
+* E1, E2, E3 ubiquitin ligases are annotated as __Protein family or group__. When _E3 ubiquitin ligase_ is written in text then annotate the whole entity, same for _E3 ligase_ and finally annotate _E3_ as standalone. Same for E1 and E2. And same for _SUMO E3 ligase_, _NEDD8 E3 ligase_ etc.
 * Complex formation for proteins across species are annotated in the corpus E.g. viral-host interactions. 
 * How do we annotate interactions between proteins when one or both partners carry mutations that alter their physicochemical behavior?
 * when will we tag “regulation of proteolysis” and when “catalysis of ubiquitination” if the ubiquitin system is involved?

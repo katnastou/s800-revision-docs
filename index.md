@@ -245,17 +245,16 @@ In this section I will try to explain the reasoning behind marking some abstract
 
 ## Topics for discussion
 
-* Add classes for Complex, Family, Group, Class? Added
-* Cytokines as a group of entities are not annotated. Should we change that rule? No
+* Cytokines as a group of entities are not annotated. 
 * How should we treat pathways? E.g. TOR pathway? Originally I didn’t annotate those, but later it made more sense to annotate TOR as a group, as one can view that as negative example. Not really sure which approach is best.
-* I have added histone acetylation/deacetylation as interactions, not sure if we want those
-* Amino acids are not annotated as chemicals unless they are not part of the polypeptide chain
-* Should we annotate ubiquitin and E1, E2, E3 ligases? Also when the mention is E3 ubiquitin ligase, should it be annotated as one mention or E3 ligase as one and ubiquitin as another? 
-* Do we annotate complex formation for proteins across species? E.g. viral-host interactions. I am not sure if that is consistent across the corpus, but I generally tried to annotate cross-species relationships when they were viral-host interactions. Yes we do annotate those
+* Amino acids are not annotated as chemicals unless they are not part of the polypeptide chain.
+* ATP, GTP, GDP, ADP are not annotated as chemicals
+* E1, E2, E3 ubiquitin ligases are annotated as __Protein family or group__. When _E3 ubiquitin ligase_ is written in text then annotate the whole entity, same for _E3 ligase_ and finally annotate _E3_ as standalone. Same for E1 and E2. And same for _SUMO E3 ligase_ etc.
+* Complex formation for proteins across species are annotated in the corpus E.g. viral-host interactions. 
 * How do we annotate interactions between proteins when one or both partners carry mutations that alter their physicochemical behavior?
 * when will we tag “regulation of proteolysis” and when “catalysis of ubiquitination” if the ubiquitin system is involved?
-* Should we rethink homodimers? I have only annotated very few cases with an annotators note. Add homodimer annotations when 2 different entities
-* How do we annotate A is a substrate of B-mediated phoshorylation?
+* Should we rethink homodimers? I have only annotated very few cases with an annotators note. Add homodimer annotations when 2 different entities are written in text, e.g. ARP-ARP interaction.
+* How do we annotate A is a substrate of B-mediated phoshorylation? Regulation?
 
 ## Relation type hierarchy (as of 27/02/2020)
 
